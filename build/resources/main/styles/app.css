@@ -1,0 +1,364 @@
+/* ===================================
+   BambooVault - Modern Material Design
+   Paleta de colores profesional y cómoda
+   =================================== */
+
+/* === Variables de Colores === */
+.root {
+    /* Paleta principal - Colores secos y profesionales */
+    -fx-bg-primary: #F5F5F5;        /* Fondo gris claro principal */
+    -fx-bg-secondary: #FFFFFF;       /* Fondo blanco para tarjetas */
+    -fx-bg-tertiary: #E8E8E8;        /* Gris más oscuro para contraste */
+    
+    -fx-green-primary: #2D5016;      /* Verde oscuro bambú para botones */
+    -fx-green-hover: #3A6B1D;        /* Verde hover más claro */
+    -fx-green-pressed: #1F3810;      /* Verde pressed más oscuro */
+    -fx-green-light: #4A7C2C;        /* Verde claro para acentos */
+    
+    -fx-text-primary: #212121;       /* Texto principal oscuro */
+    -fx-text-secondary: #757575;     /* Texto secundario gris */
+    -fx-text-on-primary: #FFFFFF;    /* Texto blanco sobre verde */
+    
+    -fx-shadow-light: rgba(0, 0, 0, 0.08);
+    -fx-shadow-medium: rgba(0, 0, 0, 0.12);
+    -fx-shadow-heavy: rgba(0, 0, 0, 0.16);
+    
+    /* Tipografía estilo Google */
+    -fx-font-family: "Segoe UI", "Roboto", "Helvetica Neue", Arial, sans-serif;
+}
+
+/* === Fondo Principal === */
+.root {
+    -fx-background-color: -fx-bg-primary;
+}
+
+/* === ScrollPane === */
+.scroll-pane {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+}
+
+.scroll-pane .viewport {
+    -fx-background-color: transparent;
+}
+
+.scroll-pane .scroll-bar:vertical,
+.scroll-pane .scroll-bar:horizontal {
+    -fx-background-color: transparent;
+}
+
+.scroll-pane .scroll-bar .thumb {
+    -fx-background-color: #BDBDBD;
+    -fx-background-radius: 4px;
+}
+
+.scroll-pane .scroll-bar .thumb:hover {
+    -fx-background-color: #9E9E9E;
+}
+
+/* === Tarjetas Material Design === */
+.card {
+    -fx-background-color: -fx-bg-secondary;
+    -fx-background-radius: 8px;
+    -fx-effect: dropshadow(gaussian, -fx-shadow-medium, 10, 0, 0, 2);
+    -fx-padding: 24px;
+}
+
+.card:hover {
+    -fx-effect: dropshadow(gaussian, -fx-shadow-heavy, 12, 0, 0, 4);
+    -fx-cursor: hand;
+}
+
+/* === Título Principal === */
+.title-main {
+    -fx-font-size: 28px;
+    -fx-font-weight: 500;
+    -fx-text-fill: -fx-text-primary;
+    -fx-padding: 0 0 8px 0;
+}
+
+.title-section {
+    -fx-font-size: 20px;
+    -fx-font-weight: 500;
+    -fx-text-fill: -fx-text-primary;
+    -fx-padding: 0 0 16px 0;
+}
+
+.subtitle {
+    -fx-font-size: 14px;
+    -fx-text-fill: -fx-text-secondary;
+    -fx-padding: 0 0 24px 0;
+}
+
+/* === Botones Material Design === */
+.button {
+    -fx-background-color: -fx-green-primary;
+    -fx-text-fill: -fx-text-on-primary;
+    -fx-font-size: 14px;
+    -fx-font-weight: 500;
+    -fx-padding: 12px 24px;
+    -fx-background-radius: 4px;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, -fx-shadow-light, 4, 0, 0, 2);
+    -fx-min-width: 180px;
+    -fx-pref-width: 180px;
+    -fx-max-width: 180px;
+    -fx-alignment: CENTER;
+    /* Transiciones suaves */
+    -fx-transition: all 0.3s ease;
+}
+
+.button:hover {
+    -fx-background-color: -fx-green-hover;
+    -fx-effect: dropshadow(gaussian, -fx-shadow-medium, 6, 0, 0, 3);
+    -fx-scale-x: 1.02;
+    -fx-scale-y: 1.02;
+}
+
+.button:pressed {
+    -fx-background-color: -fx-green-pressed;
+    -fx-effect: dropshadow(gaussian, -fx-shadow-light, 2, 0, 0, 1);
+    -fx-scale-x: 0.98;
+    -fx-scale-y: 0.98;
+}
+
+.button:focused {
+    -fx-border-color: -fx-green-light;
+    -fx-border-width: 2px;
+    -fx-border-radius: 4px;
+}
+
+/* Botón secundario (outline) */
+.button-secondary {
+    -fx-background-color: transparent;
+    -fx-text-fill: -fx-green-primary;
+    -fx-border-color: -fx-green-primary;
+    -fx-border-width: 2px;
+    -fx-border-radius: 4px;
+    -fx-font-size: 14px;
+    -fx-font-weight: 500;
+    -fx-padding: 12px 24px;
+    -fx-cursor: hand;
+    -fx-min-width: 180px;
+    -fx-pref-width: 180px;
+    -fx-max-width: 180px;
+}
+
+.button-secondary:hover {
+    -fx-background-color: rgba(45, 80, 22, 0.08);
+    -fx-scale-x: 1.02;
+    -fx-scale-y: 1.02;
+}
+
+.button-secondary:pressed {
+    -fx-background-color: rgba(45, 80, 22, 0.16);
+    -fx-scale-x: 0.98;
+    -fx-scale-y: 0.98;
+}
+
+/* Botón pequeño para acciones dentro de tarjetas */
+.button-small {
+    -fx-min-width: 120px;
+    -fx-pref-width: 120px;
+    -fx-max-width: 120px;
+    -fx-padding: 8px 16px;
+    -fx-font-size: 12px;
+}
+
+/* === TextArea y TextField === */
+.text-area, .text-field {
+    -fx-background-color: -fx-bg-secondary;
+    -fx-text-fill: -fx-text-primary;
+    -fx-font-size: 14px;
+    -fx-border-color: #E0E0E0;
+    -fx-border-width: 1px;
+    -fx-border-radius: 4px;
+    -fx-background-radius: 4px;
+    -fx-padding: 8px 12px;
+}
+
+.text-area:focused, .text-field:focused {
+    -fx-border-color: -fx-green-primary;
+    -fx-border-width: 2px;
+    -fx-effect: dropshadow(gaussian, rgba(45, 80, 22, 0.2), 4, 0, 0, 0);
+}
+
+.text-area {
+    -fx-padding: 12px;
+}
+
+.text-area .content {
+    -fx-background-color: -fx-bg-secondary;
+}
+
+/* === Labels === */
+.label {
+    -fx-text-fill: -fx-text-primary;
+    -fx-font-size: 14px;
+}
+
+.label-secondary {
+    -fx-text-fill: -fx-text-secondary;
+    -fx-font-size: 12px;
+}
+
+/* === Diálogos === */
+.dialog-pane {
+    -fx-background-color: -fx-bg-secondary;
+    -fx-background-radius: 8px;
+}
+
+.dialog-pane .header-panel {
+    -fx-background-color: -fx-bg-primary;
+    -fx-background-radius: 8px 8px 0 0;
+    -fx-padding: 20px;
+}
+
+.dialog-pane .content {
+    -fx-padding: 20px;
+}
+
+.dialog-pane .button-bar {
+    -fx-padding: 12px 20px 20px 20px;
+}
+
+/* === Separadores === */
+.separator {
+    -fx-background-color: -fx-bg-tertiary;
+}
+
+/* === VBox y HBox contenedores === */
+.container-main {
+    -fx-background-color: -fx-bg-primary;
+    -fx-padding: 24px;
+    -fx-spacing: 20px;
+}
+
+.container-cards {
+    -fx-spacing: 16px;
+    -fx-padding: 8px;
+}
+
+/* === Gráficos/Charts === */
+.chart {
+    -fx-background-color: -fx-bg-secondary;
+    -fx-background-radius: 8px;
+    -fx-padding: 16px;
+    -fx-effect: dropshadow(gaussian, -fx-shadow-medium, 10, 0, 0, 2);
+}
+
+.chart-title {
+    -fx-text-fill: -fx-text-primary;
+    -fx-font-size: 16px;
+    -fx-font-weight: 500;
+}
+
+.chart-content {
+    -fx-padding: 10px;
+}
+
+.chart-legend {
+    -fx-background-color: transparent;
+    -fx-padding: 8px;
+}
+
+.chart-pie-label {
+    -fx-fill: -fx-text-primary;
+    -fx-font-size: 12px;
+}
+
+.axis {
+    -fx-tick-label-fill: -fx-text-secondary;
+    -fx-font-size: 12px;
+}
+
+.axis-label {
+    -fx-text-fill: -fx-text-primary;
+    -fx-font-size: 14px;
+}
+
+/* === Progress Indicator === */
+.progress-indicator {
+    -fx-progress-color: -fx-green-primary;
+}
+
+/* === Badges y chips === */
+.badge {
+    -fx-background-color: -fx-green-light;
+    -fx-text-fill: white;
+    -fx-background-radius: 12px;
+    -fx-padding: 4px 12px;
+    -fx-font-size: 12px;
+    -fx-font-weight: 500;
+}
+
+/* === Animaciones === */
+@keyframes fadeIn {
+    from { -fx-opacity: 0; }
+    to { -fx-opacity: 1; }
+}
+
+@keyframes slideIn {
+    from { 
+        -fx-translate-y: -20px;
+        -fx-opacity: 0;
+    }
+    to { 
+        -fx-translate-y: 0;
+        -fx-opacity: 1;
+    }
+}
+
+/* === Tooltips === */
+.tooltip {
+    -fx-background-color: #424242;
+    -fx-text-fill: white;
+    -fx-font-size: 12px;
+    -fx-background-radius: 4px;
+    -fx-padding: 6px 10px;
+}
+
+/* === Context Menu === */
+.context-menu {
+    -fx-background-color: -fx-bg-secondary;
+    -fx-background-radius: 4px;
+    -fx-effect: dropshadow(gaussian, -fx-shadow-heavy, 12, 0, 0, 4);
+}
+
+.menu-item {
+    -fx-padding: 8px 16px;
+}
+
+.menu-item:hover {
+    -fx-background-color: rgba(45, 80, 22, 0.08);
+}
+
+/* === Header con logo === */
+.header {
+    -fx-background-color: -fx-bg-secondary;
+    -fx-padding: 20px 24px;
+    -fx-effect: dropshadow(gaussian, -fx-shadow-light, 4, 0, 0, 2);
+    -fx-alignment: CENTER;
+}
+
+.logo-container {
+    -fx-alignment: CENTER;
+    -fx-spacing: 12px;
+}
+
+/* === Grid de tarjetas === */
+.card-grid {
+    -fx-hgap: 16px;
+    -fx-vgap: 16px;
+    -fx-padding: 8px;
+}
+
+/* === Efectos de transición === */
+.fade-in {
+    -fx-opacity: 0;
+    -fx-transition: opacity 0.3s ease-in;
+}
+
+.fade-in-active {
+    -fx-opacity: 1;
+}

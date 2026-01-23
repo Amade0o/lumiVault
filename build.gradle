@@ -1,0 +1,80 @@
+plugins {
+    id 'java'
+    id 'application'
+    id 'com.github.johnrengelman.shadow' version '8.1.1'
+    id 'org.openjfx.javafxplugin' version '0.1.0'
+    // 1. Agregamos el plugin para crear el .exe
+    id 'edu.sc.seis.launch4j' version '3.0.6' 
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+}
+
+application {
+    mainClass = 'view.Main'
+}
+
+repositories {
+    mavenCentral()
+}
+
+javafx {
+    version = '21.0.2'
+    modules = ['javafx.controls', 'javafx.fxml']
+}
+
+dependencies {
+    // 2. TRUCO PARA WINDOWS: Forzamos la descarga de binarios de Windows
+    // aunque estemos en Linux. Esto es vital para JavaFX.
+    implementation "org.openjfx:javafx-base:21.0.2:win"
+    implementation "org.openjfx:javafx-graphics:21.0.2:win"
+    implementation "org.openjfx:javafx-controls:21.0.2:win"
+    implementation "org.openjfx:javafx-fxml:21.0.2:win"
+
+    // Tus otras dependencias...
+    implementation 'org.xerial:sqlite-jdbc:3.45.1.0'
+    
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.10.2'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    testImplementation 'io.cucumber:cucumber-java:7.15.0'
+    testImplementation 'io.cucumber:cucumber-junit:7.15.0'
+    testImplementation 'org.mockito:mockito-core:5.8.0'
+    testImplementation 'org.mockito:mockito-junit-jupiter:5.8.0'
+    testImplementation 'org.assertj:assertj-core:3.24.2'
+    testImplementation 'com.h2database:h2:2.2.224'
+}
+
+// 3. Configuración del Ejecutable (.exe)
+launch4j {
+    mainClassName = 'view.Main'
+    outfile = 'BambooVault.exe' // Nombre del ejecutable
+    
+    // IMPORTANTE: Aquí le decimos que busque una carpeta llamada "jre" al lado del exe
+    bundledJrePath = './jre' 
+    jreMinVersion = '21'
+    
+    // Como usas JavaFX, no queremos consola negra de fondo
+    headerType = 'gui' 
+    
+    // Le indicamos qué JAR usar (usaremos el Fat Jar de Shadow)
+    jarTask = tasks.shadowJar
+}
+
+tasks.named('shadowJar') {
+    archiveBaseName.set('bambooVault')
+    archiveVersion.set('') // Deja el nombre limpio: bambooVault.jar
+    manifest {
+        attributes 'Main-Class': 'view.Main'
+    }
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}
+
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}

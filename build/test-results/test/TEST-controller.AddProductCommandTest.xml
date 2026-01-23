@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="controller.AddProductCommandTest" tests="3" skipped="0" failures="0" errors="0" timestamp="2026-01-23T03:47:26" hostname="Compuamadeo" time="0.004">
+  <properties/>
+  <testcase name="shouldHandleProductWithoutCategory()" classname="controller.AddProductCommandTest" time="0.001"/>
+  <testcase name="shouldCreateAddProductCommandWithProduct()" classname="controller.AddProductCommandTest" time="0.001"/>
+  <testcase name="shouldHandleProductWithCategory()" classname="controller.AddProductCommandTest" time="0.001"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

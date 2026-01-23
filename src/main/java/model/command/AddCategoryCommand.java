@@ -1,0 +1,88 @@
+package model.command;
+
+import database.DatabaseConnection;
+import model.Category;
+import model.Movement;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.time.LocalDateTime;
+
+/**
+ * Command to add categories to the database.
+ * Implements the Command Pattern.
+ */
+public class AddCategoryCommand implements Command {
+
+    private Category categoryToAdd;
+
+    public AddCategoryCommand(Category category) {
+        this.categoryToAdd = category;
+    }
+
+    /**
+     * Executes the add category command.
+     *
+     * @return The generated ID of the inserted category
+     * @throws SQLException if a database error occurs
+     */
+    @Override
+    public Integer execute() throws SQLException {
+        return insertCategory();
+    }
+
+    /**
+     * Inserts a category into the database.
+     */
+    private int insertCategory() throws SQLException {
+        String insertCategorySql = """
+            INSERT INTO categoria (nombre, descripcion)
+            VALUES (?, ?)
+            """;
+
+        Connection connection = DatabaseConnection.getInstance().getConnection();
+
+        try (PreparedStatement statement = connection.prepareStatement(
+                insertCategorySql, Statement.RETURN_GENERATED_KEYS)) {
+
+            statement.setString(1, categoryToAdd.getName());
+            statement.setString(2, categoryToAdd.getDescription());
+
+            statement.executeUpdate();
+
+            try (ResultSet generatedKeys = statement.getGeneratedKeys()) {
+                if (generatedKeys.next()) {
+                    int generatedId = generatedKeys.getInt(1);
+                    categoryToAdd.setId(generatedId);
+                    
+                    recordCategoryCreationMovement(generatedId);
+                    
+                    return generatedId;
+                }
+            }
+        }
+        return -1;
+    }
+    
+    /**
+     * Records a category creation movement.
+     */
+    private void recordCategoryCreationMovement(int categoryId) throws SQLException {
+        Category categoryWithId = new Category();
+        categoryWithId.setId(categoryId);
+        categoryWithId.setName(categoryToAdd.getName());
+        categoryWithId.setDescription(categoryToAdd.getDescription());
+        
+        Movement categoryCreatedMovement = new Movement();
+        categoryCreatedMovement.setCategory(categoryWithId);
+        categoryCreatedMovement.setType(Movement.MovementType.CATEGORY_CREATED);
+        categoryCreatedMovement.setDescription("Categoría creada");
+        categoryCreatedMovement.setDateTime(LocalDateTime.now());
+        
+        AddStockCommand movementCommand = new AddStockCommand(categoryCreatedMovement);
+        movementCommand.execute();
+    }
+}

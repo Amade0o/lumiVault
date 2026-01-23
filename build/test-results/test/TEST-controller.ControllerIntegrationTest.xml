@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="controller.ControllerIntegrationTest" tests="13" skipped="0" failures="0" errors="0" timestamp="2026-01-23T03:47:26" hostname="Compuamadeo" time="0.384">
+  <properties/>
+  <testcase name="shouldReturnEmptyListsWhenNoData()" classname="controller.ControllerIntegrationTest" time="0.213"/>
+  <testcase name="shouldReturnEmptyMovementsForNonExistentProduct()" classname="controller.ControllerIntegrationTest" time="0.012"/>
+  <testcase name="shouldHandleProductRemovalWithMovements()" classname="controller.ControllerIntegrationTest" time="0.031"/>
+  <testcase name="shouldFailToRemoveNonExistentCategory()" classname="controller.ControllerIntegrationTest" time="0.014"/>
+  <testcase name="shouldRecordStockMovement()" classname="controller.ControllerIntegrationTest" time="0.017"/>
+  <testcase name="shouldRemoveProduct()" classname="controller.ControllerIntegrationTest" time="0.014"/>
+  <testcase name="shouldAddAndRetrieveCategory()" classname="controller.ControllerIntegrationTest" time="0.011"/>
+  <testcase name="shouldAddAndRetrieveProduct()" classname="controller.ControllerIntegrationTest" time="0.012"/>
+  <testcase name="shouldFailToRemoveNonExistentProduct()" classname="controller.ControllerIntegrationTest" time="0.007"/>
+  <testcase name="shouldHandleMultipleProducts()" classname="controller.ControllerIntegrationTest" time="0.014"/>
+  <testcase name="shouldHandleCategoryWithProducts()" classname="controller.ControllerIntegrationTest" time="0.011"/>
+  <testcase name="shouldHandleMultipleCategories()" classname="controller.ControllerIntegrationTest" time="0.009"/>
+  <testcase name="shouldRemoveCategory()" classname="controller.ControllerIntegrationTest" time="0.008"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[SLF4J: Failed to load class "org.slf4j.impl.StaticLoggerBinder".
+SLF4J: Defaulting to no-operation (NOP) logger implementation
+SLF4J: See http://www.slf4j.org/codes.html#StaticLoggerBinder for further details.
+]]></system-err>
+</testsuite>
