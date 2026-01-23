@@ -50,7 +50,7 @@ dependencies {
 // 3. Configuración del Ejecutable (.exe)
 launch4j {
     mainClassName = 'view.Main'
-    outfile = 'BambooVault.exe' // Nombre del ejecutable
+    outfile = 'LumiVault.exe' // Nombre del ejecutable
     
     // IMPORTANTE: Aquí le decimos que busque una carpeta llamada "jre" al lado del exe
     bundledJrePath = './jre' 
@@ -64,8 +64,8 @@ launch4j {
 }
 
 tasks.named('shadowJar') {
-    archiveBaseName.set('bambooVault')
-    archiveVersion.set('') // Deja el nombre limpio: bambooVault.jar
+    archiveBaseName.set('lumiVault')
+    archiveVersion.set('') // Deja el nombre limpio: lumiVault.jar
     manifest {
         attributes 'Main-Class': 'view.Main'
     }

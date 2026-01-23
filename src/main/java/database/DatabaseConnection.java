@@ -12,7 +12,7 @@ import java.sql.Statement;
  */
 public class DatabaseConnection {
     
-    private static final String DATABASE_FILE_NAME = "bamboovault.db";
+    private static final String DATABASE_FILE_NAME = "lumivault.db";
     private static final String DATA_FOLDER_NAME = "data";
     
     private static DatabaseConnection instance;

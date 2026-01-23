@@ -17,7 +17,7 @@
 @if "%DEBUG%"=="" @echo off
 @rem ##########################################################################
 @rem
-@rem  bambooVault startup script for Windows
+@rem  lumiVault startup script for Windows
 @rem
 @rem ##########################################################################
 
@@ -33,7 +33,7 @@ set APP_HOME=%DIRNAME%..
 @rem Resolve any "." and ".." in APP_HOME to make it shorter.
 for %%i in ("%APP_HOME%") do set APP_HOME=%%~fi
 
-@rem Add default JVM options here. You can also use JAVA_OPTS and BAMBOO_VAULT_OPTS to pass JVM options to this script.
+@rem Add default JVM options here. You can also use JAVA_OPTS and LUMI_VAULT_OPTS to pass JVM options to this script.
 set DEFAULT_JVM_OPTS=
 
 @rem Find java.exe
@@ -68,22 +68,22 @@ goto fail
 :execute
 @rem Setup the command line
 
-set CLASSPATH=%APP_HOME%\lib\bambooVault.jar;%APP_HOME%\lib\javafx-fxml-21.0.2-win.jar;%APP_HOME%\lib\javafx-fxml-21.0.2-linux.jar;%APP_HOME%\lib\javafx-controls-21.0.2-win.jar;%APP_HOME%\lib\javafx-controls-21.0.2-linux.jar;%APP_HOME%\lib\javafx-graphics-21.0.2-win.jar;%APP_HOME%\lib\javafx-graphics-21.0.2-linux.jar;%APP_HOME%\lib\javafx-base-21.0.2-win.jar;%APP_HOME%\lib\javafx-base-21.0.2-linux.jar;%APP_HOME%\lib\sqlite-jdbc-3.45.1.0.jar;%APP_HOME%\lib\slf4j-api-1.7.36.jar
+set CLASSPATH=%APP_HOME%\lib\lumiVault.jar;%APP_HOME%\lib\javafx-fxml-21.0.2-win.jar;%APP_HOME%\lib\javafx-fxml-21.0.2-linux.jar;%APP_HOME%\lib\javafx-controls-21.0.2-win.jar;%APP_HOME%\lib\javafx-controls-21.0.2-linux.jar;%APP_HOME%\lib\javafx-graphics-21.0.2-win.jar;%APP_HOME%\lib\javafx-graphics-21.0.2-linux.jar;%APP_HOME%\lib\javafx-base-21.0.2-win.jar;%APP_HOME%\lib\javafx-base-21.0.2-linux.jar;%APP_HOME%\lib\sqlite-jdbc-3.45.1.0.jar;%APP_HOME%\lib\slf4j-api-1.7.36.jar
 
 
-@rem Execute bambooVault
-"%JAVA_EXE%" %DEFAULT_JVM_OPTS% %JAVA_OPTS% %BAMBOO_VAULT_OPTS%  -classpath "%CLASSPATH%" view.Main %*
+@rem Execute lumiVault
+"%JAVA_EXE%" %DEFAULT_JVM_OPTS% %JAVA_OPTS% %LUMI_VAULT_OPTS%  -classpath "%CLASSPATH%" view.Main %*
 
 :end
 @rem End local scope for the variables with windows NT shell
 if %ERRORLEVEL% equ 0 goto mainEnd
 
 :fail
-rem Set variable BAMBOO_VAULT_EXIT_CONSOLE if you need the _script_ return code instead of
+rem Set variable LUMI_VAULT_EXIT_CONSOLE if you need the _script_ return code instead of
 rem the _cmd.exe /c_ return code!
 set EXIT_CODE=%ERRORLEVEL%
 if %EXIT_CODE% equ 0 set EXIT_CODE=1
-if not ""=="%BAMBOO_VAULT_EXIT_CONSOLE%" exit %EXIT_CODE%
+if not ""=="%LUMI_VAULT_EXIT_CONSOLE%" exit %EXIT_CODE%
 exit /b %EXIT_CODE%
 
 :mainEnd

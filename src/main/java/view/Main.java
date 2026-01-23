@@ -3,7 +3,7 @@ package view;
 import javafx.application.Application;
 
 /**
- * Main entry point for the BambooVault application.
+ * Main entry point for the LumiVault application.
  * Launches either the JavaFX GUI or console application based on arguments.
  */
 public class Main {

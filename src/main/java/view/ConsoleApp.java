@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Scanner;
 
 /**
- * Console-based interactive application for testing BambooVault inventory system.
+ * Console-based interactive application for testing LumiVault inventory system.
  * Provides a menu-driven interface to test all system functionalities.
  */
 public class ConsoleApp {
@@ -21,7 +21,7 @@ public class ConsoleApp {
     private static Controller controller;
 
     public static void main(String[] args) {
-        System.out.println("=== BambooVault - Console Test Interface ===\n");
+        System.out.println("=== LumiVault - Console Test Interface ===\n");
 
         try {
             // Initialize database connection
@@ -92,7 +92,7 @@ public class ConsoleApp {
     }
 
     private static void printMenu() {
-        System.out.println("\n=== BambooVault Menu ===");
+        System.out.println("\n=== LumiVault Menu ===");
         System.out.println("1. Add Product");
         System.out.println("2. Add Category");
         System.out.println("3. List All Products");

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="controller.AddStockCommandTest" tests="2" skipped="0" failures="0" errors="0" timestamp="2026-01-23T03:47:26" hostname="Compuamadeo" time="0.002">
+<testsuite name="controller.AddStockCommandTest" tests="2" skipped="0" failures="0" errors="0" timestamp="2026-01-23T04:02:56" hostname="Compuamadeo" time="0.002">
   <properties/>
   <testcase name="shouldCreateAddStockCommandWithExitMovement()" classname="controller.AddStockCommandTest" time="0.001"/>
   <testcase name="shouldCreateAddStockCommandWithEntryMovement()" classname="controller.AddStockCommandTest" time="0.0"/>

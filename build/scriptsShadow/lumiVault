@@ -18,7 +18,7 @@
 
 ##############################################################################
 ##
-##  bambooVault start up script for UN*X
+##  lumiVault start up script for UN*X
 ##
 ##############################################################################
 
@@ -40,10 +40,10 @@ cd "`dirname \"$PRG\"`/.." >/dev/null
 APP_HOME="`pwd -P`"
 cd "$SAVED" >/dev/null
 
-APP_NAME="bambooVault"
+APP_NAME="lumiVault"
 APP_BASE_NAME=`basename "$0"`
 
-# Add default JVM options here. You can also use JAVA_OPTS and BAMBOO_VAULT_OPTS to pass JVM options to this script.
+# Add default JVM options here. You can also use JAVA_OPTS and LUMI_VAULT_OPTS to pass JVM options to this script.
 DEFAULT_JVM_OPTS=""
 
 # Use the maximum available, or set MAX_FD != -1 to use that value.
@@ -80,7 +80,7 @@ case "`uname`" in
     ;;
 esac
 
-CLASSPATH=$APP_HOME/lib/bambooVault-all.jar
+CLASSPATH=$APP_HOME/lib/lumiVault-all.jar
 
 # Determine the Java command to use to start the JVM.
 if [ -n "$JAVA_HOME" ] ; then
@@ -178,6 +178,6 @@ save () {
 APP_ARGS=`save "$@"`
 
 # Collect all arguments for the java command, following the shell quoting and substitution rules
-eval set -- $DEFAULT_JVM_OPTS $JAVA_OPTS $BAMBOO_VAULT_OPTS -jar "\"$CLASSPATH\"" "$APP_ARGS"
+eval set -- $DEFAULT_JVM_OPTS $JAVA_OPTS $LUMI_VAULT_OPTS -jar "\"$CLASSPATH\"" "$APP_ARGS"
 
 exec "$JAVACMD" "$@"

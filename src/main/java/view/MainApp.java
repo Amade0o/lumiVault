@@ -29,7 +29,7 @@ import java.util.HashMap;
 import java.io.InputStream;
 
 /**
- * JavaFX application for BambooVault inventory system.
+ * JavaFX application for LumiVault inventory system.
  * Modern Material Design UI with professional aesthetics.
  */
 public class MainApp extends Application {
@@ -71,14 +71,14 @@ public class MainApp extends Application {
             scene.getStylesheets().add(css);
             
             // Configure stage
-            primaryStage.setTitle("BambooVault - Sistema de Inventario");
+            primaryStage.setTitle("LumiVault - Sistema de Inventario");
             primaryStage.setScene(scene);
             primaryStage.setMinWidth(900);
             primaryStage.setMinHeight(650);
             
             // Set application icon
             try {
-                InputStream iconStream = getClass().getResourceAsStream("/images/bamboo-logo.png");
+                InputStream iconStream = getClass().getResourceAsStream("/images/lumi-logo.png");
                 if (iconStream != null) {
                     Image icon = new Image(iconStream);
                     primaryStage.getIcons().add(icon);
@@ -123,9 +123,9 @@ public class MainApp extends Application {
         HBox logoContainer = new HBox(20);
         logoContainer.setAlignment(Pos.CENTER);
         
-        // Load bamboo logo
+        // Load lumi logo
         try {
-            InputStream logoStream = getClass().getResourceAsStream("/images/bamboo-logo.png");
+            InputStream logoStream = getClass().getResourceAsStream("/images/lumi-logo.png");
             if (logoStream != null) {
                 Image logo = new Image(logoStream);
                 ImageView logoView = new ImageView(logo);
@@ -134,14 +134,14 @@ public class MainApp extends Application {
                 logoView.setPreserveRatio(true);
                 logoContainer.getChildren().add(logoView);
             } else {
-                System.out.println("Logo resource not found: /images/bamboo-logo.png");
+                System.out.println("Logo resource not found: /images/lumi-logo.png");
             }
         } catch (Exception e) {
             System.out.println("Could not load logo: " + e.getMessage());
         }
         
         // Title
-        Label titleLabel = new Label("BambooVault");
+        Label titleLabel = new Label("LumiVault");
         titleLabel.setStyle("-fx-font-size: 36px; -fx-font-weight: 600; -fx-text-fill: #212121;");
         logoContainer.getChildren().add(titleLabel);
         
