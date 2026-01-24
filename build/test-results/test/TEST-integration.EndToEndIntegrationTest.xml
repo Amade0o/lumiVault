@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="integration.EndToEndIntegrationTest" tests="3" skipped="0" failures="0" errors="0" timestamp="2026-01-23T04:02:57" hostname="Compuamadeo" time="0.053">
+<testsuite name="integration.EndToEndIntegrationTest" tests="3" skipped="0" failures="0" errors="0" timestamp="2026-01-24T00:44:11" hostname="Compuamadeo" time="0.095">
   <properties/>
-  <testcase name="shouldHandleDataIntegrityAcrossOperations()" classname="integration.EndToEndIntegrationTest" time="0.013"/>
-  <testcase name="shouldCompleteFullInventoryLifecycle()" classname="integration.EndToEndIntegrationTest" time="0.024"/>
-  <testcase name="shouldHandleComplexBusinessScenario()" classname="integration.EndToEndIntegrationTest" time="0.015"/>
+  <testcase name="shouldHandleDataIntegrityAcrossOperations()" classname="integration.EndToEndIntegrationTest" time="0.024"/>
+  <testcase name="shouldCompleteFullInventoryLifecycle()" classname="integration.EndToEndIntegrationTest" time="0.038"/>
+  <testcase name="shouldHandleComplexBusinessScenario()" classname="integration.EndToEndIntegrationTest" time="0.03"/>
   <system-out><![CDATA[]]></system-out>
   <system-err><![CDATA[]]></system-err>
 </testsuite>

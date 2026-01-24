@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="performance.PerformanceAndStressTest" tests="9" skipped="0" failures="0" errors="0" timestamp="2026-01-23T04:02:57" hostname="Compuamadeo" time="1.018">
+<testsuite name="performance.PerformanceAndStressTest" tests="9" skipped="0" failures="0" errors="0" timestamp="2026-01-24T00:44:12" hostname="Compuamadeo" time="2.901">
   <properties/>
-  <testcase name="shouldHandleMixedOperationsStress()" classname="performance.PerformanceAndStressTest" time="0.07"/>
-  <testcase name="shouldHandleConcurrentCategoriesAndProducts()" classname="performance.PerformanceAndStressTest" time="0.273"/>
-  <testcase name="shouldHandleProductsWithVeryLongNames()" classname="performance.PerformanceAndStressTest" time="0.009"/>
-  <testcase name="shouldHandleLargeNumberOfStockMovements()" classname="performance.PerformanceAndStressTest" time="0.137"/>
-  <testcase name="shouldHandleRapidSuccessionOfOperations()" classname="performance.PerformanceAndStressTest" time="0.077"/>
-  <testcase name="shouldHandleLargeNumberOfProducts()" classname="performance.PerformanceAndStressTest" time="0.162"/>
-  <testcase name="shouldHandleMemoryEfficientOperations()" classname="performance.PerformanceAndStressTest" time="0.26"/>
-  <testcase name="shouldHandleCategoriesWithVeryLongDescriptions()" classname="performance.PerformanceAndStressTest" time="0.004"/>
-  <testcase name="shouldHandleLargeNumberOfCategories()" classname="performance.PerformanceAndStressTest" time="0.02"/>
+  <testcase name="shouldHandleMixedOperationsStress()" classname="performance.PerformanceAndStressTest" time="0.171"/>
+  <testcase name="shouldHandleConcurrentCategoriesAndProducts()" classname="performance.PerformanceAndStressTest" time="0.885"/>
+  <testcase name="shouldHandleProductsWithVeryLongNames()" classname="performance.PerformanceAndStressTest" time="0.011"/>
+  <testcase name="shouldHandleLargeNumberOfStockMovements()" classname="performance.PerformanceAndStressTest" time="0.292"/>
+  <testcase name="shouldHandleRapidSuccessionOfOperations()" classname="performance.PerformanceAndStressTest" time="0.204"/>
+  <testcase name="shouldHandleLargeNumberOfProducts()" classname="performance.PerformanceAndStressTest" time="0.568"/>
+  <testcase name="shouldHandleMemoryEfficientOperations()" classname="performance.PerformanceAndStressTest" time="0.71"/>
+  <testcase name="shouldHandleCategoriesWithVeryLongDescriptions()" classname="performance.PerformanceAndStressTest" time="0.007"/>
+  <testcase name="shouldHandleLargeNumberOfCategories()" classname="performance.PerformanceAndStressTest" time="0.044"/>
   <system-out><![CDATA[]]></system-out>
   <system-err><![CDATA[]]></system-err>
 </testsuite>

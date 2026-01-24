@@ -1,6 +1,7 @@
 package integration;
 
 import controller.Controller;
+import controller.CommandType;
 import model.factory.ProductFactory;
 import database.DatabaseConnection;
 import database.TestDatabaseConnection;
@@ -45,9 +46,12 @@ class EndToEndIntegrationTest {
         Category clothing = new Category(0, "Clothing", "Apparel and fashion items");
         Category books = new Category(0, "Books", "Reading materials and publications");
 
-        int electronicsId = controller.addCategory(electronics);
-        int clothingId = controller.addCategory(clothing);
-        int booksId = controller.addCategory(books);
+        controller.executeCommand(CommandType.ADD_CATEGORY, electronics);
+        int electronicsId = electronics.getId();
+        controller.executeCommand(CommandType.ADD_CATEGORY, clothing);
+        int clothingId = clothing.getId();
+        controller.executeCommand(CommandType.ADD_CATEGORY, books);
+        int booksId = books.getId();
 
         // === PHASE 2: Initial Inventory Setup ===
         // Add initial products
@@ -64,10 +68,10 @@ class EndToEndIntegrationTest {
         Product novel = ProductFactory.createProduct("Science Fiction Novel", 12.0, 18.0, 30, booksCat);
         novel.setId("2004000000004");
 
-        controller.addProduct(laptop);
-        controller.addProduct(mouse);
-        controller.addProduct(tshirt);
-        controller.addProduct(novel);
+        controller.executeCommand(CommandType.ADD_PRODUCT, laptop);
+        controller.executeCommand(CommandType.ADD_PRODUCT, mouse);
+        controller.executeCommand(CommandType.ADD_PRODUCT, tshirt);
+        controller.executeCommand(CommandType.ADD_PRODUCT, novel);
 
         // === PHASE 3: Stock Movements ===
         // Simulate sales and purchases
@@ -103,7 +107,7 @@ class EndToEndIntegrationTest {
 
         // === PHASE 5: Category Management ===
         // Remove a category with products (should set products' category to null)
-        controller.removeCategory(clothingId);
+        controller.executeCommand(CommandType.REMOVE_CATEGORY, clothingId);
 
         // Verify products still exist but category is null
         products = controller.getAllProducts();
@@ -114,7 +118,7 @@ class EndToEndIntegrationTest {
 
         // === PHASE 6: Product Removal ===
         // Remove a product
-        controller.removeProduct(finalTshirt.getId());
+        controller.executeCommand(CommandType.REMOVE_PRODUCT, finalTshirt.getId());
 
         // Final verification
         products = controller.getAllProducts();
@@ -133,9 +137,12 @@ class EndToEndIntegrationTest {
         Category accessories = new Category(0, "Accessories", "Product accessories");
         Category consumables = new Category(0, "Consumables", "Consumable items");
 
-        int electronicsId = controller.addCategory(electronics);
-        int accessoriesId = controller.addCategory(accessories);
-        int consumablesId = controller.addCategory(consumables);
+        controller.executeCommand(CommandType.ADD_CATEGORY, electronics);
+        int electronicsId = electronics.getId();
+        controller.executeCommand(CommandType.ADD_CATEGORY, accessories);
+        int accessoriesId = accessories.getId();
+        controller.executeCommand(CommandType.ADD_CATEGORY, consumables);
+        int consumablesId = consumables.getId();
 
         // Setup products with relationships
         Category electronicsCat = new Category(electronicsId, "Electronics", "");
@@ -150,9 +157,12 @@ class EndToEndIntegrationTest {
         headphones.setId("2007000000007");
 
         // Add products
-        String phoneId = controller.addProduct(phone);
-        String chargerId = controller.addProduct(charger);
-        String headphonesId = controller.addProduct(headphones);
+        controller.executeCommand(CommandType.ADD_PRODUCT, phone);
+        String phoneId = phone.getId();
+        controller.executeCommand(CommandType.ADD_PRODUCT, charger);
+        String chargerId = charger.getId();
+        controller.executeCommand(CommandType.ADD_PRODUCT, headphones);
+        String headphonesId = headphones.getId();
 
         // Simulate business day: multiple sales and restocks
         // Morning sales
@@ -192,12 +202,14 @@ class EndToEndIntegrationTest {
 
         // Create category and product
         Category category = new Category(0, "Test Category", "For integrity testing");
-        int categoryId = controller.addCategory(category);
+        controller.executeCommand(CommandType.ADD_CATEGORY, category);
+        int categoryId = category.getId();
 
         Category categoryRef = new Category(categoryId, "Test Category", "");
         Product product = ProductFactory.createProduct("Integrity Product", 10.0, 15.0, 5, categoryRef);
         product.setId("2008000000008");
-        String productId = controller.addProduct(product);
+        controller.executeCommand(CommandType.ADD_PRODUCT, product);
+        String productId = product.getId();
 
         // Add movements
         recordMovement("Integrity Product", 3, Movement.MovementType.STOCK_ENTRY);
@@ -218,7 +230,7 @@ class EndToEndIntegrationTest {
         assertThat(movements.get(0).getProduct().getId()).isEqualTo(productId);
 
         // Remove product and verify movements are cleaned up
-        controller.removeProduct(productId);
+        controller.executeCommand(CommandType.REMOVE_PRODUCT, productId);
         movements = controller.getMovementsForProduct(productId);
         assertThat(movements).isEmpty();
 
@@ -245,7 +257,7 @@ class EndToEndIntegrationTest {
         movement.setType(type);
         movement.setDescription("Test movement");
         movement.setDateTime(null);
-        controller.recordStockMovement(movement);
+        controller.executeCommand(CommandType.ADD_STOCK, movement);
     }
 
     private Product findProductByName(List<Product> products, String name) {

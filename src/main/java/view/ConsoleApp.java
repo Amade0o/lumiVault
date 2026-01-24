@@ -1,6 +1,7 @@
 package view;
 
 import controller.Controller;
+import controller.CommandType;
 import model.factory.ProductFactory;
 import database.DatabaseConnection;
 import model.Category;
@@ -132,9 +133,9 @@ public class ConsoleApp {
 
             Product product = ProductFactory.createProduct(name, costPrice, salePrice, stock, category);
             product.setId(productId); // Set the barcode ID
-            String id = controller.addProduct(product);
+            controller.executeCommand(CommandType.ADD_PRODUCT, product);
 
-            System.out.println("✓ Product created successfully with ID: " + id);
+            System.out.println("✓ Product created successfully with ID: " + productId);
 
         } catch (Exception e) {
             System.out.println("Error adding product: " + e.getMessage());
@@ -149,9 +150,9 @@ public class ConsoleApp {
             String description = getStringInput("Description: ");
 
             Category category = new Category(0, name, description);
-            int id = controller.addCategory(category);
+            controller.executeCommand(CommandType.ADD_CATEGORY, category);
 
-            System.out.println("✓ Category created successfully with ID: " + id);
+            System.out.println("✓ Category created successfully");
 
         } catch (Exception e) {
             System.out.println("Error adding category: " + e.getMessage());
@@ -211,13 +212,9 @@ public class ConsoleApp {
             System.out.println("\n--- Remove Product ---");
 
             String id = getStringInput("Product ID (barcode) to remove: ");
-            boolean success = controller.removeProduct(id);
+            controller.executeCommand(CommandType.REMOVE_PRODUCT, id);
 
-            if (success) {
-                System.out.println("✓ Product removed successfully.");
-            } else {
-                System.out.println("✗ Product not found or could not be removed.");
-            }
+            System.out.println("✓ Product removed successfully.");
 
         } catch (Exception e) {
             System.out.println("Error removing product: " + e.getMessage());
@@ -229,13 +226,9 @@ public class ConsoleApp {
             System.out.println("\n--- Remove Category ---");
 
             int id = getIntInput("Category ID to remove: ");
-            boolean success = controller.removeCategory(id);
+            controller.executeCommand(CommandType.REMOVE_CATEGORY, id);
 
-            if (success) {
-                System.out.println("✓ Category removed successfully.");
-            } else {
-                System.out.println("✗ Category not found or could not be removed.");
-            }
+            System.out.println("✓ Category removed successfully.");
 
         } catch (Exception e) {
             System.out.println("Error removing category: " + e.getMessage());
@@ -266,9 +259,13 @@ public class ConsoleApp {
             movement.setType(movementType);
             movement.setDescription("Stock movement from console");
             movement.setDateTime(null); // Will use current time
-            int id = controller.recordStockMovement(movement);
+            
+            CommandType commandType = movementType == Movement.MovementType.STOCK_ENTRY 
+                ? CommandType.ADD_STOCK 
+                : CommandType.REMOVE_STOCK;
+            controller.executeCommand(commandType, movement);
 
-            System.out.println("✓ Stock movement recorded with ID: " + id);
+            System.out.println("✓ Stock movement recorded successfully");
 
         } catch (Exception e) {
             System.out.println("Error recording stock movement: " + e.getMessage());

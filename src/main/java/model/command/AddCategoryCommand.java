@@ -26,18 +26,20 @@ public class AddCategoryCommand implements Command {
     /**
      * Executes the add category command.
      *
-     * @return The generated ID of the inserted category
      * @throws SQLException if a database error occurs
      */
     @Override
-    public Integer execute() throws SQLException {
-        return insertCategory();
+    public void execute() throws SQLException {
+        insertCategory();
     }
 
     /**
      * Inserts a category into the database.
      */
     private int insertCategory() throws SQLException {
+        // Validate category data
+        validateCategory();
+        
         String insertCategorySql = """
             INSERT INTO categoria (nombre, descripcion)
             VALUES (?, ?)
@@ -84,5 +86,15 @@ public class AddCategoryCommand implements Command {
         
         AddStockCommand movementCommand = new AddStockCommand(categoryCreatedMovement);
         movementCommand.execute();
+    }
+    
+    /**
+     * Validates category data before insertion.
+     * Throws SQLException for invalid data.
+     */
+    private void validateCategory() throws SQLException {
+        if (categoryToAdd.getName() == null || categoryToAdd.getName().trim().isEmpty()) {
+            throw new SQLException("Category name cannot be null or empty");
+        }
     }
 }

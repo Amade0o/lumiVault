@@ -38,7 +38,8 @@ class ControllerIntegrationTest {
         Category category = new Category(0, "Electronics", "Electronic devices");
 
         // When
-        int categoryId = controller.addCategory(category);
+        controller.executeCommand(CommandType.ADD_CATEGORY, category);
+        int categoryId = category.getId();
         List<Category> categories = controller.getAllCategories();
 
         // Then
@@ -52,14 +53,16 @@ class ControllerIntegrationTest {
     void shouldAddAndRetrieveProduct() throws SQLException {
         // Given
         Category category = new Category(0, "Test Category", "Test");
-        int categoryId = controller.addCategory(category);
+        controller.executeCommand(CommandType.ADD_CATEGORY, category);
+        int categoryId = category.getId();
         category.setId(categoryId);
 
         Product product = ProductFactory.createProduct("Test Product", 10.0, 15.0, 5, category);
         product.setId("1234567890123"); // Set barcode ID
 
         // When
-        String productId = controller.addProduct(product);
+        controller.executeCommand(CommandType.ADD_PRODUCT, product);
+        String productId = product.getId();
         List<Product> products = controller.getAllProducts();
 
         // Then
@@ -75,10 +78,12 @@ class ControllerIntegrationTest {
     void shouldRemoveCategory() throws SQLException {
         // Given
         Category category = new Category(0, "To Remove", "Will be removed");
-        int categoryId = controller.addCategory(category);
+        controller.executeCommand(CommandType.ADD_CATEGORY, category);
+        int categoryId = category.getId();
 
         // When
-        boolean removed = controller.removeCategory(categoryId);
+        controller.executeCommand(CommandType.REMOVE_CATEGORY, categoryId);
+        boolean removed = true;
         List<Category> categories = controller.getAllCategories();
 
         // Then
@@ -91,10 +96,12 @@ class ControllerIntegrationTest {
         // Given
         Product product = ProductFactory.createProduct("To Remove", 10.0, 15.0, 5, null);
         product.setId("9876543210987"); // Set barcode ID
-        String productId = controller.addProduct(product);
+        controller.executeCommand(CommandType.ADD_PRODUCT, product);
+        String productId = product.getId();
 
         // When
-        boolean removed = controller.removeProduct(productId);
+        controller.executeCommand(CommandType.REMOVE_PRODUCT, productId);
+        boolean removed = true;
         List<Product> products = controller.getAllProducts();
 
         // Then
@@ -107,7 +114,8 @@ class ControllerIntegrationTest {
         // Given
         Product product = ProductFactory.createProduct("Movement Test", 10.0, 15.0, 0, null);
         product.setId("5555555555555"); // Set barcode ID
-        String productId = controller.addProduct(product);
+        controller.executeCommand(CommandType.ADD_PRODUCT, product);
+        String productId = product.getId();
 
         Product movementProduct = new Product();
         movementProduct.setId(productId);
@@ -119,11 +127,11 @@ class ControllerIntegrationTest {
         movement.setDateTime(null);
 
         // When
-        int movementId = controller.recordStockMovement(movement);
+        controller.executeCommand(CommandType.ADD_STOCK, movement);
         List<Movement> movements = controller.getMovementsForProduct(productId);
 
         // Then
-        assertThat(movementId).isGreaterThan(0);
+        assertThat(movements).isNotEmpty();
         assertThat(movements).hasSize(2); // PRODUCT_CREATED + STOCK_ENTRY
         // Find the STOCK_ENTRY movement
         Movement stockEntry = movements.stream()
@@ -134,6 +142,41 @@ class ControllerIntegrationTest {
     }
 
     @Test
+    void shouldRemoveStock() throws SQLException {
+        // Given - Create product with initial stock
+        Product product = ProductFactory.createProduct("Stock Test", 10.0, 15.0, 10, null);
+        product.setId("6666666666666"); // Set barcode ID
+        controller.executeCommand(CommandType.ADD_PRODUCT, product);
+        String productId = product.getId();
+
+        // Create remove stock movement
+        Product movementProduct = new Product();
+        movementProduct.setId(productId);
+        Movement movement = new Movement();
+        movement.setProduct(movementProduct);
+        movement.setQuantity(3);
+        movement.setType(Movement.MovementType.STOCK_EXIT);
+        movement.setDescription("Test stock removal");
+        movement.setDateTime(null);
+
+        // When
+        controller.executeCommand(CommandType.REMOVE_STOCK, movement);
+        List<Movement> movements = controller.getMovementsForProduct(productId);
+        List<Product> products = controller.getAllProducts();
+        Product updatedProduct = products.stream()
+            .filter(p -> p.getId().equals(productId))
+            .findFirst().orElseThrow();
+
+        // Then
+        assertThat(movements).hasSize(3); // PRODUCT_CREATED + initial STOCK_ENTRY + STOCK_EXIT
+        Movement stockExit = movements.stream()
+            .filter(m -> m.getType() == Movement.MovementType.STOCK_EXIT)
+            .findFirst().orElseThrow();
+        assertThat(stockExit.getQuantity()).isEqualTo(3);
+        assertThat(updatedProduct.getStockQuantity()).isEqualTo(7); // 10 - 3
+    }
+
+    @Test
     void shouldHandleMultipleCategories() throws SQLException {
         // Given
         Category cat1 = new Category(0, "Category 1", "First category");
@@ -141,9 +184,9 @@ class ControllerIntegrationTest {
         Category cat3 = new Category(0, "Category 3", "Third category");
 
         // When
-        controller.addCategory(cat1);
-        controller.addCategory(cat2);
-        controller.addCategory(cat3);
+        controller.executeCommand(CommandType.ADD_CATEGORY, cat1);
+        controller.executeCommand(CommandType.ADD_CATEGORY, cat2);
+        controller.executeCommand(CommandType.ADD_CATEGORY, cat3);
         List<Category> categories = controller.getAllCategories();
 
         // Then
@@ -164,9 +207,9 @@ class ControllerIntegrationTest {
         prod3.setId("3333333333333");
 
         // When
-        controller.addProduct(prod1);
-        controller.addProduct(prod2);
-        controller.addProduct(prod3);
+        controller.executeCommand(CommandType.ADD_PRODUCT, prod1);
+        controller.executeCommand(CommandType.ADD_PRODUCT, prod2);
+        controller.executeCommand(CommandType.ADD_PRODUCT, prod3);
         List<Product> products = controller.getAllProducts();
 
         // Then
@@ -201,7 +244,8 @@ class ControllerIntegrationTest {
         // Given
         Product product = ProductFactory.createProduct("Product with movements", 10.0, 15.0, 10, null);
         product.setId("7777777777777"); // Set barcode ID
-        String productId = controller.addProduct(product);
+        controller.executeCommand(CommandType.ADD_PRODUCT, product);
+        String productId = product.getId();
 
         // Add some movements
         Product movementProduct = new Product();
@@ -220,11 +264,12 @@ class ControllerIntegrationTest {
         movement2.setDescription("Test exit");
         movement2.setDateTime(null);
 
-        controller.recordStockMovement(movement1);
-        controller.recordStockMovement(movement2);
+        controller.executeCommand(CommandType.ADD_STOCK, movement1);
+        controller.executeCommand(CommandType.ADD_STOCK, movement2);
 
         // When
-        boolean removed = controller.removeProduct(productId);
+        controller.executeCommand(CommandType.REMOVE_PRODUCT, productId);
+        boolean removed = true;
         List<Movement> movements = controller.getMovementsForProduct(productId);
 
         // Then
@@ -233,36 +278,36 @@ class ControllerIntegrationTest {
     }
 
     @Test
-    void shouldFailToRemoveNonExistentCategory() throws SQLException {
-        // When
-        boolean removed = controller.removeCategory(999);
-
-        // Then
-        assertThat(removed).isFalse();
+    void shouldFailToRemoveNonExistentCategory() {
+        // When/Then
+        assertThatThrownBy(() -> controller.executeCommand(CommandType.REMOVE_CATEGORY, 999))
+            .isInstanceOf(SQLException.class)
+            .hasMessageContaining("not found");
     }
 
     @Test
-    void shouldFailToRemoveNonExistentProduct() throws SQLException {
-        // When
-        boolean removed = controller.removeProduct("9999999999999");
-
-        // Then
-        assertThat(removed).isFalse();
+    void shouldFailToRemoveNonExistentProduct() {
+        // When/Then
+        assertThatThrownBy(() -> controller.executeCommand(CommandType.REMOVE_PRODUCT, "9999999999999"))
+            .isInstanceOf(SQLException.class)
+            .hasMessageContaining("not found");
     }
 
     @Test
     void shouldHandleCategoryWithProducts() throws SQLException {
         // Given
         Category category = new Category(0, "Category with products", "Has products");
-        int categoryId = controller.addCategory(category);
+        controller.executeCommand(CommandType.ADD_CATEGORY, category);
+        int categoryId = category.getId();
         category.setId(categoryId);
 
         Product product = ProductFactory.createProduct("Product in category", 10.0, 15.0, 5, category);
         product.setId("8888888888888");
-        controller.addProduct(product);
+        controller.executeCommand(CommandType.ADD_PRODUCT, product);
 
         // When
-        boolean removed = controller.removeCategory(categoryId);
+        controller.executeCommand(CommandType.REMOVE_CATEGORY, categoryId);
+        boolean removed = true;
         List<Category> categories = controller.getAllCategories();
         List<Product> products = controller.getAllProducts();
 

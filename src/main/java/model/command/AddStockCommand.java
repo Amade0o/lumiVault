@@ -14,7 +14,7 @@ import java.time.format.DateTimeFormatter;
 /**
  * Command to add stock movements (entries/exits) to the database.
  * Updates product stock automatically based on movement type.
- * Implements the Command Pattern.
+ * Implements the Command Pattern for user actions.
  */
 public class AddStockCommand implements Command {
 
@@ -27,18 +27,20 @@ public class AddStockCommand implements Command {
     /**
      * Executes the add stock command.
      *
-     * @return The generated movement ID
      * @throws SQLException if a database error occurs
      */
     @Override
-    public Integer execute() throws SQLException {
-        return insertMovement();
+    public void execute() throws SQLException {
+        insertMovement();
     }
 
     /**
      * Inserts a movement into the database and updates product stock.
      */
     private int insertMovement() throws SQLException {
+        // Validate movement data
+        validateMovement();
+        
         String insertMovementSql = """
             INSERT INTO movimiento (id_producto, id_categoria, cantidad, tipo, descripcion, fecha)
             VALUES (?, ?, ?, ?, ?, ?)
@@ -104,6 +106,15 @@ public class AddStockCommand implements Command {
             return;
         }
 
+        // Check insufficient stock for exits
+        if (movement.getType() == Movement.MovementType.STOCK_EXIT) {
+            int currentStock = getCurrentStock(connection);
+            if (currentStock < movement.getQuantity()) {
+                throw new SQLException("Insufficient stock for product " + movement.getProduct().getId() + 
+                    ". Current: " + currentStock + ", Requested: " + movement.getQuantity());
+            }
+        }
+
         String updateStockSql;
         int quantity = movement.getQuantity();
 
@@ -120,6 +131,40 @@ public class AddStockCommand implements Command {
             int rowsAffected = updateStatement.executeUpdate();
             if (rowsAffected == 0) {
                 throw new SQLException("Product with ID " + movement.getProduct().getId() + " not found");
+            }
+        }
+    }
+    
+    /**
+     * Gets the current stock of a product.
+     */
+    private int getCurrentStock(Connection connection) throws SQLException {
+        String query = "SELECT cantidad_stock FROM producto WHERE id_producto = ?";
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+            stmt.setString(1, movement.getProduct().getId());
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt("cantidad_stock");
+                }
+            }
+        }
+        return 0;
+    }
+    
+    /**
+     * Validates movement data before insertion.
+     * Throws SQLException for invalid data.
+     */
+    private void validateMovement() throws SQLException {
+        // For stock entry/exit movements, validate quantity
+        if (movement.getType() == Movement.MovementType.STOCK_ENTRY ||
+            movement.getType() == Movement.MovementType.STOCK_EXIT) {
+            
+            if (movement.getProduct() == null) {
+                throw new SQLException("Stock movement must have a product");
+            }
+            if (movement.getQuantity() == null || movement.getQuantity() <= 0) {
+                throw new SQLException("Movement quantity must be greater than zero");
             }
         }
     }

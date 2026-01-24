@@ -25,18 +25,20 @@ public class AddProductCommand implements Command {
     /**
      * Executes the add product command.
      * 
-     * @return The ID of the inserted product
      * @throws SQLException if a database error occurs
      */
     @Override
-    public String execute() throws SQLException {
-        return insertProduct();
+    public void execute() throws SQLException {
+        insertProduct();
     }
     
     /**
      * Inserts a product into the database.
      */
     private String insertProduct() throws SQLException {
+        // Validate product data
+        validateProduct();
+        
         Connection connection = DatabaseConnection.getInstance().getConnection();
         
         boolean hasExistingId = productToAdd.getId() != null && !productToAdd.getId().trim().isEmpty();
@@ -124,5 +126,21 @@ public class AddProductCommand implements Command {
             }
         }
         return false;
+    }
+    
+    /**
+     * Validates product data before insertion.
+     * Throws SQLException for invalid data.
+     */
+    private void validateProduct() throws SQLException {
+        if (productToAdd.getCostPrice() < 0) {
+            throw new SQLException("Cost price cannot be negative");
+        }
+        if (productToAdd.getSalePrice() < 0) {
+            throw new SQLException("Sale price cannot be negative");
+        }
+        if (productToAdd.getStockQuantity() < 0) {
+            throw new SQLException("Stock quantity cannot be negative");
+        }
     }
 }

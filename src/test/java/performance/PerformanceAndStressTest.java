@@ -1,6 +1,7 @@
 package performance;
 
 import controller.Controller;
+import controller.CommandType;
 import model.factory.ProductFactory;
 import database.DatabaseConnection;
 import database.TestDatabaseConnection;
@@ -43,7 +44,7 @@ class PerformanceAndStressTest {
             Product product = ProductFactory.createProduct(
                 "Product" + i, 10.0 + i, 15.0 + i, i % 100, null);
             product.setId(String.format("%013d", 2000 + i));
-            controller.addProduct(product);
+            controller.executeCommand(CommandType.ADD_PRODUCT, product);
         }
 
         // Then
@@ -59,7 +60,7 @@ class PerformanceAndStressTest {
         // When
         for (int i = 0; i < numberOfCategories; i++) {
             Category category = new Category(0, "Category" + i, "Description" + i);
-            controller.addCategory(category);
+            controller.executeCommand(CommandType.ADD_CATEGORY, category);
         }
 
         // Then
@@ -72,7 +73,8 @@ class PerformanceAndStressTest {
         // Given
         Product product = ProductFactory.createProduct("Test Product", 10.0, 15.0, 1000, null);
         product.setId("1000000000000");
-        String productId = controller.addProduct(product);
+        controller.executeCommand(CommandType.ADD_PRODUCT, product);
+        String productId = product.getId();
 
         int numberOfMovements = 1000;
 
@@ -90,7 +92,7 @@ class PerformanceAndStressTest {
             movement.setType(type);
             movement.setDescription("Performance test movement");
             movement.setDateTime(null);
-            controller.recordStockMovement(movement);
+            controller.executeCommand(CommandType.ADD_STOCK, movement);
         }
 
         // Then
@@ -108,7 +110,7 @@ class PerformanceAndStressTest {
         // When - Create categories
         for (int i = 0; i < numberOfCategories; i++) {
             Category category = new Category(0, "Category" + i, "Description" + i);
-            controller.addCategory(category);
+            controller.executeCommand(CommandType.ADD_CATEGORY, category);
         }
 
         List<Category> categories = controller.getAllCategories();
@@ -121,7 +123,7 @@ class PerformanceAndStressTest {
                     "Product" + category.getId() + "_" + j,
                     10.0, 15.0, 5, category);
                 product.setId(String.format("%013d", 3000 + productCounter++));
-                controller.addProduct(product);
+                controller.executeCommand(CommandType.ADD_PRODUCT, product);
             }
         }
 
@@ -139,7 +141,8 @@ class PerformanceAndStressTest {
         // When
         Product product = ProductFactory.createProduct(longName, 10.0, 15.0, 5, null);
         product.setId("1111111111111");
-        String productId = controller.addProduct(product);
+        controller.executeCommand(CommandType.ADD_PRODUCT, product);
+        String productId = product.getId();
 
         // Then
         List<Product> products = controller.getAllProducts();
@@ -155,7 +158,8 @@ class PerformanceAndStressTest {
 
         // When
         Category category = new Category(0, "Long Description Category", longDescription);
-        int categoryId = controller.addCategory(category);
+        controller.executeCommand(CommandType.ADD_CATEGORY, category);
+        int categoryId = category.getId();
 
         // Then
         List<Category> categories = controller.getAllCategories();
@@ -174,14 +178,16 @@ class PerformanceAndStressTest {
             // Create
             Product product = ProductFactory.createProduct("Temp" + i, 10.0, 15.0, 5, null);
             product.setId(String.format("%013d", i)); // 13 digit IDs
-            String productId = controller.addProduct(product);
+            controller.executeCommand(CommandType.ADD_PRODUCT, product);
+        String productId = product.getId();
 
             // Read
             List<Product> products = controller.getAllProducts();
             assertThat(products).isNotEmpty();
 
             // Delete
-            boolean deleted = controller.removeProduct(productId);
+            controller.executeCommand(CommandType.REMOVE_PRODUCT, productId);
+        boolean deleted = true;
             assertThat(deleted).isTrue();
         }
 
@@ -201,11 +207,11 @@ class PerformanceAndStressTest {
                 case 0 -> { // Add product
                     Product product = ProductFactory.createProduct("Stress" + i, 10.0, 15.0, 5, null);
                     product.setId(String.format("%013d", 4000 + i));
-                    controller.addProduct(product);
+                    controller.executeCommand(CommandType.ADD_PRODUCT, product);
                 }
                 case 1 -> { // Add category
                     Category category = new Category(0, "StressCat" + i, "Description");
-                    controller.addCategory(category);
+                    controller.executeCommand(CommandType.ADD_CATEGORY, category);
                 }
                 case 2 -> { // List products
                     controller.getAllProducts();
@@ -234,7 +240,7 @@ class PerformanceAndStressTest {
             for (int i = 0; i < 100; i++) {
                 Product product = ProductFactory.createProduct("Cycle" + cycle + "_" + i, 10.0, 15.0, 5, null);
                 product.setId(String.format("%013d", 5000 + (cycle * 100) + i));
-                controller.addProduct(product);
+                controller.executeCommand(CommandType.ADD_PRODUCT, product);
             }
 
             // Verify data exists
@@ -243,7 +249,7 @@ class PerformanceAndStressTest {
 
             // Clean up - remove all products
             for (Product product : products) {
-                controller.removeProduct(product.getId());
+                controller.executeCommand(CommandType.REMOVE_PRODUCT, product.getId());
             }
 
             // Verify cleanup

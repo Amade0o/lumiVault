@@ -1,6 +1,7 @@
 package view;
 
 import controller.Controller;
+import controller.CommandType;
 import model.factory.ProductFactory;
 import database.DatabaseConnection;
 import javafx.application.Application;
@@ -752,8 +753,8 @@ public class MainApp extends Application {
             if (!name.trim().isEmpty()) {
                 try {
                     Category category = new Category(0, name.trim(), "");
-                    int id = controller.addCategory(category);
-                    appendOutput("✓ Categoría creada: " + name + " (ID: " + id + ")");
+                    controller.executeCommand(CommandType.ADD_CATEGORY, category);
+                    appendOutput("✓ Categoría creada: " + name);
                     updateAllCharts();
                 } catch (SQLException e) {
                     showError("Error", "No se pudo crear la categoría: " + e.getMessage());
@@ -829,9 +830,9 @@ public class MainApp extends Application {
                                                         try {
                                                             Product product = ProductFactory.createProduct(name.trim(), costPrice, salePrice, stock, category);
                                                             product.setId(productId.trim()); // Set the barcode ID
-                                                            String id = controller.addProduct(product);
+                                                            controller.executeCommand(CommandType.ADD_PRODUCT, product);
                                                             appendOutput("✓ Producto creado: " + name.trim() +
-                                                                " (ID: " + id + ", Categoría: " + category.getName() + ")");
+                                                                " (ID: " + productId.trim() + ", Categoría: " + category.getName() + ")");
                                                             updateAllCharts();
                                                         } catch (SQLException e) {
                                                             showError("Error", "No se pudo crear el producto: " + e.getMessage());
@@ -927,7 +928,7 @@ public class MainApp extends Application {
                         movement.setDescription("Entrada de stock desde interfaz");
                         movement.setDateTime(null); // Will use current time
 
-                        int movementId = controller.recordStockMovement(movement);
+                        controller.executeCommand(CommandType.ADD_STOCK, movement);
                         appendOutput("✓ Stock agregado: " + quantity + " unidades al producto ID " + productId);
                         updateAllCharts();
                     } catch (NumberFormatException ex) {
@@ -969,7 +970,7 @@ public class MainApp extends Application {
                         movement.setDescription("Salida de stock desde interfaz");
                         movement.setDateTime(null); // Will use current time
 
-                        int movementId = controller.recordStockMovement(movement);
+                        controller.executeCommand(CommandType.REMOVE_STOCK, movement);
                         appendOutput("✓ Stock quitado: " + quantity + " unidades del producto ID " + productId);
                         updateAllCharts();
                     } catch (NumberFormatException ex) {

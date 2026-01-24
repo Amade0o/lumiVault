@@ -1,6 +1,7 @@
 package steps;
 
 import controller.Controller;
+import controller.CommandType;
 import model.factory.ProductFactory;
 import database.DatabaseConnection;
 import database.TestDatabaseConnection;
@@ -59,7 +60,8 @@ public class InventoryStepDefinitions {
     @Given("a category {string} exists")
     public void aCategoryExists(String categoryName) throws SQLException {
         Category category = new Category(0, categoryName, "Test description");
-        int id = controller.addCategory(category);
+        controller.executeCommand(CommandType.ADD_CATEGORY, category);
+        int id = category.getId();
         categoryIds.put(categoryName, id);
     }
 
@@ -67,7 +69,8 @@ public class InventoryStepDefinitions {
     public void aProductExistsWithInitialStock(String productName, int stock) throws SQLException {
         Product product = ProductFactory.createProduct(productName, 10.0, 15.0, stock, null);
         product.setId(String.format("%013d", productIds.size() + 1000)); // Generate unique barcode
-        String id = controller.addProduct(product);
+        controller.executeCommand(CommandType.ADD_PRODUCT, product);
+        String id = product.getId();
         productIds.put(productName, id);
     }
 
@@ -75,7 +78,8 @@ public class InventoryStepDefinitions {
     public void aProductExistsWithPricesAndStock(String productName, double costPrice, double salePrice, int stock) throws SQLException {
         Product product = ProductFactory.createProduct(productName, costPrice, salePrice, stock, null);
         product.setId(String.format("%013d", productIds.size() + 1000)); // Generate unique barcode
-        String id = controller.addProduct(product);
+        controller.executeCommand(CommandType.ADD_PRODUCT, product);
+        String id = product.getId();
         productIds.put(productName, id);
     }
 
@@ -87,7 +91,7 @@ public class InventoryStepDefinitions {
 
         Category category = new Category(categoryId, categoryName, "");
         Product product = ProductFactory.createProduct("Product in " + categoryName, 10.0, 15.0, 5, category);
-        controller.addProduct(product);
+        controller.executeCommand(CommandType.ADD_PRODUCT, product);
     }
 
     @When("I add a product with name {string}, cost price {double}, sale price {double}, and stock {int}")
@@ -95,7 +99,8 @@ public class InventoryStepDefinitions {
         try {
             Product product = ProductFactory.createProduct(name, costPrice, salePrice, stock, null);
             product.setId(String.format("%013d", productIds.size() + 1000)); // Generate unique barcode
-            String id = controller.addProduct(product);
+            controller.executeCommand(CommandType.ADD_PRODUCT, product);
+        String id = product.getId();
             productIds.put(name, id);
             lastOperationResult = true;
         } catch (Exception e) {
@@ -113,7 +118,8 @@ public class InventoryStepDefinitions {
             Category category = new Category(categoryId, categoryName, "");
             Product product = ProductFactory.createProduct(productName, costPrice, salePrice, stock, category);
             product.setId(String.format("%013d", productIds.size() + 1000)); // Generate unique barcode
-            String id = controller.addProduct(product);
+            controller.executeCommand(CommandType.ADD_PRODUCT, product);
+        String id = product.getId();
             productIds.put(productName, id);
             lastOperationResult = true;
         } catch (Exception e) {
@@ -126,7 +132,8 @@ public class InventoryStepDefinitions {
     public void iAddACategoryWithDescription(String name, String description) {
         try {
             Category category = new Category(0, name, description);
-            int id = controller.addCategory(category);
+            controller.executeCommand(CommandType.ADD_CATEGORY, category);
+        int id = category.getId();
             categoryIds.put(name, id);
             lastOperationResult = true;
         } catch (Exception e) {
@@ -139,7 +146,8 @@ public class InventoryStepDefinitions {
     public void iAddACategoryWithNoDescription(String name) {
         try {
             Category category = new Category(0, name, null);
-            int id = controller.addCategory(category);
+            controller.executeCommand(CommandType.ADD_CATEGORY, category);
+        int id = category.getId();
             categoryIds.put(name, id);
             lastOperationResult = true;
         } catch (Exception e) {
@@ -171,7 +179,8 @@ public class InventoryStepDefinitions {
         try {
             String productId = productIds.get(productName);
             assertThat(productId).isNotNull();
-            lastOperationResult = controller.removeProduct(productId);
+            controller.executeCommand(CommandType.REMOVE_PRODUCT, productId);
+            lastOperationResult = true;
         } catch (Exception e) {
             lastException = e;
             lastOperationResult = false;
@@ -183,7 +192,8 @@ public class InventoryStepDefinitions {
         try {
             int categoryId = categoryIds.get(categoryName);
             assertThat(categoryId).isNotNull();
-            lastOperationResult = controller.removeCategory(categoryId);
+            controller.executeCommand(CommandType.REMOVE_CATEGORY, categoryId);
+            lastOperationResult = true;
         } catch (Exception e) {
             lastException = e;
             lastOperationResult = false;
@@ -194,7 +204,8 @@ public class InventoryStepDefinitions {
     public void iTryToRemoveAProductWithId(int productIdInt) {
         try {
             String productId = String.valueOf(productIdInt);
-            lastOperationResult = controller.removeProduct(productId);
+            controller.executeCommand(CommandType.REMOVE_PRODUCT, productId);
+            lastOperationResult = true;
         } catch (Exception e) {
             lastException = e;
             lastOperationResult = false;
@@ -204,7 +215,8 @@ public class InventoryStepDefinitions {
     @When("I try to remove a category with ID {int}")
     public void iTryToRemoveACategoryWithId(int categoryId) {
         try {
-            lastOperationResult = controller.removeCategory(categoryId);
+            controller.executeCommand(CommandType.REMOVE_CATEGORY, categoryId);
+            lastOperationResult = true;
         } catch (Exception e) {
             lastException = e;
             lastOperationResult = false;

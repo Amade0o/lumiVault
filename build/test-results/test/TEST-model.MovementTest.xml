@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="model.MovementTest" tests="11" skipped="0" failures="0" errors="0" timestamp="2026-01-23T04:02:57" hostname="Compuamadeo" time="0.009">
+<testsuite name="model.MovementTest" tests="11" skipped="0" failures="0" errors="0" timestamp="2026-01-24T00:44:12" hostname="Compuamadeo" time="0.024">
   <properties/>
   <testcase name="shouldHandleExitMovementType()" classname="model.MovementTest" time="0.001"/>
-  <testcase name="shouldHandleEntryMovementType()" classname="model.MovementTest" time="0.0"/>
-  <testcase name="shouldCreateMovementWithValidData()" classname="model.MovementTest" time="0.001"/>
+  <testcase name="shouldHandleEntryMovementType()" classname="model.MovementTest" time="0.001"/>
+  <testcase name="shouldCreateMovementWithValidData()" classname="model.MovementTest" time="0.005"/>
   <testcase name="shouldHandlePastDateTime()" classname="model.MovementTest" time="0.001"/>
-  <testcase name="shouldAllowLargeQuantities()" classname="model.MovementTest" time="0.0"/>
+  <testcase name="shouldAllowLargeQuantities()" classname="model.MovementTest" time="0.001"/>
   <testcase name="shouldSetAndGetProperties()" classname="model.MovementTest" time="0.0"/>
-  <testcase name="shouldAllowNegativeQuantity()" classname="model.MovementTest" time="0.001"/>
+  <testcase name="shouldAllowNegativeQuantity()" classname="model.MovementTest" time="0.002"/>
   <testcase name="shouldHandleFutureDateTime()" classname="model.MovementTest" time="0.001"/>
-  <testcase name="shouldCreateEmptyMovement()" classname="model.MovementTest" time="0.0"/>
-  <testcase name="shouldHandleNullDateTime()" classname="model.MovementTest" time="0.0"/>
+  <testcase name="shouldCreateEmptyMovement()" classname="model.MovementTest" time="0.001"/>
+  <testcase name="shouldHandleNullDateTime()" classname="model.MovementTest" time="0.001"/>
   <testcase name="shouldAllowZeroQuantity()" classname="model.MovementTest" time="0.001"/>
   <system-out><![CDATA[]]></system-out>
   <system-err><![CDATA[]]></system-err>
