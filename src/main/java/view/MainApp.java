@@ -812,7 +812,10 @@ public class MainApp extends Application {
                     appendOutput("✓ Categoría creada: " + name);
                     updateAllCharts();
                 } catch (SQLException e) {
-                    showError("Error", "No se pudo crear la categoría: " + e.getMessage());
+                    String errorMsg = e.getMessage().toLowerCase().contains("unique") 
+                        ? "Ya existe una categoría con el nombre '" + name.trim() + "'"
+                        : "No se pudo crear la categoría: " + e.getMessage();
+                    showError("Error", errorMsg);
                 }
             }
         });

@@ -80,7 +80,7 @@ public class Controller {
         String selectAllProductsSql = """
             SELECT p.id_producto, p.nombre, p.precio_costo, p.precio_venta, 
                    p.cantidad_stock, p.id_categoria,
-                   c.nombre AS categoria_nombre, c.descripcion AS categoria_descripcion
+                   c.nombre AS categoria_nombre
             FROM producto p
             LEFT JOIN categoria c ON p.id_categoria = c.id_categoria
             """;
@@ -121,7 +121,7 @@ public class Controller {
      */
     public List<Category> getAllCategories() throws SQLException {
         String selectAllCategoriesSql = """
-            SELECT id_categoria, nombre, descripcion
+            SELECT id_categoria, nombre
             FROM categoria
             """;
         
