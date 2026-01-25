@@ -721,15 +721,63 @@ public class MainApp extends Application {
                     .toList();
 
                 if (results.isEmpty()) {
-                    appendOutput("🔍 No se encontró ningún producto con ID: " + id);
+                    showInfo("Búsqueda", "🔍 No se encontró ningún producto con ID: " + id);
                 } else {
-                    appendOutput("🔍 Resultado para ID '" + id + "':");
-                    for (Product p : results) {
-                        String categoryName = p.getCategory() != null ?
-                            p.getCategory().getName() : "Sin categoría";
-                        appendOutput(String.format("  • %s (ID: %s) | Stock: %d | Precio: $%.2f | %s",
-                            p.getName(), p.getId(), p.getStockQuantity(), p.getSalePrice(), categoryName));
-                    }
+                    // Show results in a popup table
+                    Dialog<ButtonType> resultDialog = new Dialog<>();
+                    resultDialog.setTitle("Resultado de Búsqueda");
+                    resultDialog.setHeaderText("🔍 Resultado para ID: " + id);
+                    
+                    TableView<Product> table = new TableView<>();
+                    table.setItems(javafx.collections.FXCollections.observableArrayList(results));
+                    
+                    // Define columns
+                    TableColumn<Product, String> idCol = new TableColumn<>("ID");
+                    idCol.setCellValueFactory(cellData -> 
+                        new javafx.beans.property.SimpleStringProperty(cellData.getValue().getId()));
+                    idCol.setPrefWidth(100);
+                    
+                    TableColumn<Product, String> nameCol = new TableColumn<>("Nombre");
+                    nameCol.setCellValueFactory(cellData -> 
+                        new javafx.beans.property.SimpleStringProperty(cellData.getValue().getName()));
+                    nameCol.setPrefWidth(200);
+                    
+                    TableColumn<Product, Integer> stockCol = new TableColumn<>("Stock");
+                    stockCol.setCellValueFactory(cellData -> 
+                        new javafx.beans.property.SimpleIntegerProperty(cellData.getValue().getStockQuantity()).asObject());
+                    stockCol.setPrefWidth(80);
+                    
+                    TableColumn<Product, String> costCol = new TableColumn<>("Precio Costo");
+                    costCol.setCellValueFactory(cellData -> 
+                        new javafx.beans.property.SimpleStringProperty(
+                            String.format("$%.2f", cellData.getValue().getCostPrice())));
+                    costCol.setPrefWidth(100);
+                    
+                    TableColumn<Product, String> saleCol = new TableColumn<>("Precio Venta");
+                    saleCol.setCellValueFactory(cellData -> 
+                        new javafx.beans.property.SimpleStringProperty(
+                            String.format("$%.2f", cellData.getValue().getSalePrice())));
+                    saleCol.setPrefWidth(100);
+                    
+                    TableColumn<Product, String> categoryCol = new TableColumn<>("Categoría");
+                    categoryCol.setCellValueFactory(cellData -> 
+                        new javafx.beans.property.SimpleStringProperty(
+                            cellData.getValue().getCategory() != null ? 
+                                cellData.getValue().getCategory().getName() : "Sin categoría"));
+                    categoryCol.setPrefWidth(150);
+                    
+                    table.getColumns().addAll(idCol, nameCol, stockCol, costCol, saleCol, categoryCol);
+                    table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+                    table.setPrefHeight(150);
+                    table.setPrefWidth(750);
+                    
+                    VBox content = new VBox(10);
+                    content.setPadding(new Insets(10));
+                    content.getChildren().add(table);
+                    
+                    resultDialog.getDialogPane().setContent(content);
+                    resultDialog.getDialogPane().getButtonTypes().add(ButtonType.CLOSE);
+                    resultDialog.showAndWait();
                 }
             } catch (SQLException e) {
                 showError("Error", "Error en la búsqueda: " + e.getMessage());
@@ -877,15 +925,73 @@ public class MainApp extends Application {
         try {
             List<Product> products = controller.getAllProducts();
             if (products.isEmpty()) {
-                appendOutput("No hay productos registrados.");
-            } else {
-                appendOutput("=== PRODUCTOS ===");
-                for (Product p : products) {
-                    String categoryName = p.getCategory() != null ? p.getCategory().getName() : "Sin categoría";
-                    appendOutput(String.format("ID: %s | %s | Stock: %d | Precio: $%.2f | Categoría: %s",
-                        p.getId(), p.getName(), p.getStockQuantity(), p.getSalePrice(), categoryName));
-                }
+                showInfo("Productos", "No hay productos registrados.");
+                return;
             }
+            
+            // Create table dialog
+            Dialog<ButtonType> dialog = new Dialog<>();
+            dialog.setTitle("Lista de Productos");
+            dialog.setHeaderText("Todos los Productos del Inventario");
+            
+            // Create TableView
+            TableView<Product> table = new TableView<>();
+            table.setItems(javafx.collections.FXCollections.observableArrayList(products));
+            
+            // Define columns
+            TableColumn<Product, String> idCol = new TableColumn<>("ID");
+            idCol.setCellValueFactory(cellData -> 
+                new javafx.beans.property.SimpleStringProperty(cellData.getValue().getId()));
+            idCol.setPrefWidth(100);
+            
+            TableColumn<Product, String> nameCol = new TableColumn<>("Nombre");
+            nameCol.setCellValueFactory(cellData -> 
+                new javafx.beans.property.SimpleStringProperty(cellData.getValue().getName()));
+            nameCol.setPrefWidth(200);
+            
+            TableColumn<Product, Integer> stockCol = new TableColumn<>("Stock");
+            stockCol.setCellValueFactory(cellData -> 
+                new javafx.beans.property.SimpleIntegerProperty(cellData.getValue().getStockQuantity()).asObject());
+            stockCol.setPrefWidth(80);
+            
+            TableColumn<Product, String> costCol = new TableColumn<>("Precio Costo");
+            costCol.setCellValueFactory(cellData -> 
+                new javafx.beans.property.SimpleStringProperty(
+                    String.format("$%.2f", cellData.getValue().getCostPrice())));
+            costCol.setPrefWidth(100);
+            
+            TableColumn<Product, String> saleCol = new TableColumn<>("Precio Venta");
+            saleCol.setCellValueFactory(cellData -> 
+                new javafx.beans.property.SimpleStringProperty(
+                    String.format("$%.2f", cellData.getValue().getSalePrice())));
+            saleCol.setPrefWidth(100);
+            
+            TableColumn<Product, String> categoryCol = new TableColumn<>("Categoría");
+            categoryCol.setCellValueFactory(cellData -> 
+                new javafx.beans.property.SimpleStringProperty(
+                    cellData.getValue().getCategory() != null ? 
+                        cellData.getValue().getCategory().getName() : "Sin categoría"));
+            categoryCol.setPrefWidth(150);
+            
+            table.getColumns().addAll(idCol, nameCol, stockCol, costCol, saleCol, categoryCol);
+            
+            // Set table properties
+            table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+            table.setPrefHeight(400);
+            table.setPrefWidth(750);
+            
+            VBox content = new VBox(10);
+            content.setPadding(new Insets(10));
+            
+            Label summary = new Label("Total de productos: " + products.size());
+            summary.setStyle("-fx-font-weight: bold; -fx-font-size: 14px;");
+            
+            content.getChildren().addAll(summary, table);
+            
+            dialog.getDialogPane().setContent(content);
+            dialog.getDialogPane().getButtonTypes().add(ButtonType.CLOSE);
+            dialog.showAndWait();
+            
         } catch (SQLException e) {
             showError("Error", "No se pudieron listar los productos: " + e.getMessage());
         }
@@ -895,14 +1001,54 @@ public class MainApp extends Application {
         try {
             List<Category> categories = controller.getAllCategories();
             if (categories.isEmpty()) {
-                appendOutput("No hay categorías registradas.");
-            } else {
-                appendOutput("=== CATEGORÍAS ===");
-                for (Category c : categories) {
-                    appendOutput(String.format("ID: %d | %s | %s",
-                        c.getId(), c.getName(), c.getDescription()));
-                }
+                showInfo("Categorías", "No hay categorías registradas.");
+                return;
             }
+            
+            // Create table dialog
+            Dialog<ButtonType> dialog = new Dialog<>();
+            dialog.setTitle("Lista de Categorías");
+            dialog.setHeaderText("Todas las Categorías del Inventario");
+            
+            // Create TableView
+            TableView<Category> table = new TableView<>();
+            table.setItems(javafx.collections.FXCollections.observableArrayList(categories));
+            
+            // Define columns
+            TableColumn<Category, Integer> idCol = new TableColumn<>("ID");
+            idCol.setCellValueFactory(cellData -> 
+                new javafx.beans.property.SimpleIntegerProperty(cellData.getValue().getId()).asObject());
+            idCol.setPrefWidth(80);
+            
+            TableColumn<Category, String> nameCol = new TableColumn<>("Nombre");
+            nameCol.setCellValueFactory(cellData -> 
+                new javafx.beans.property.SimpleStringProperty(cellData.getValue().getName()));
+            nameCol.setPrefWidth(200);
+            
+            TableColumn<Category, String> descCol = new TableColumn<>("Descripción");
+            descCol.setCellValueFactory(cellData -> 
+                new javafx.beans.property.SimpleStringProperty(cellData.getValue().getDescription()));
+            descCol.setPrefWidth(350);
+            
+            table.getColumns().addAll(idCol, nameCol, descCol);
+            
+            // Set table properties
+            table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+            table.setPrefHeight(400);
+            table.setPrefWidth(650);
+            
+            VBox content = new VBox(10);
+            content.setPadding(new Insets(10));
+            
+            Label summary = new Label("Total de categorías: " + categories.size());
+            summary.setStyle("-fx-font-weight: bold; -fx-font-size: 14px;");
+            
+            content.getChildren().addAll(summary, table);
+            
+            dialog.getDialogPane().setContent(content);
+            dialog.getDialogPane().getButtonTypes().add(ButtonType.CLOSE);
+            dialog.showAndWait();
+            
         } catch (SQLException e) {
             showError("Error", "No se pudieron listar las categorías: " + e.getMessage());
         }
@@ -1055,6 +1201,14 @@ public class MainApp extends Application {
 
     private void showError(String title, String message) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
+    
+    private void showInfo(String title, String message) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle(title);
         alert.setHeaderText(null);
         alert.setContentText(message);

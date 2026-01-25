@@ -166,5 +166,5 @@ public class UpdatePriceCommand implements Command {
             
             statement.executeUpdate();
         }
-    }
+   }
 }
