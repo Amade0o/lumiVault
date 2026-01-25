@@ -111,14 +111,12 @@ class BusinessRulesValidationTest {
 
     @Test
     void shouldAcceptNullCategoryDescription() {
-        Category category = new Category(0, "Test", null);
-        assertThat(category.getDescription()).isNull();
+        Category category = new Category(0, "Test");
     }
 
     @Test
     void shouldAcceptEmptyCategoryDescription() {
-        Category category = new Category(0, "Test", "");
-        assertThat(category.getDescription()).isEqualTo("");
+        Category category = new Category(0, "Test");
     }
 
     @Test
@@ -159,15 +157,14 @@ class BusinessRulesValidationTest {
     @Test
     void shouldHandleVeryLongCategoryNames() {
         String longName = "B".repeat(5000);
-        Category category = new Category(0, longName, "Description");
+        Category category = new Category(0, longName);
         assertThat(category.getName()).isEqualTo(longName);
     }
 
     @Test
     void shouldHandleVeryLongDescriptions() {
         String longDescription = "C".repeat(10000);
-        Category category = new Category(0, "Test", longDescription);
-        assertThat(category.getDescription()).isEqualTo(longDescription);
+        Category category = new Category(0, "Test");
     }
 
     @Test

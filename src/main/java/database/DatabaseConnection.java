@@ -117,8 +117,7 @@ public class DatabaseConnection {
         String createCategoryTableSql = """
             CREATE TABLE IF NOT EXISTS categoria (
                 id_categoria INTEGER PRIMARY KEY AUTOINCREMENT,
-                nombre TEXT NOT NULL UNIQUE,
-                descripcion TEXT
+                nombre TEXT NOT NULL UNIQUE
             );
             """;
         

@@ -104,7 +104,6 @@ public class Controller {
                     Category category = new Category();
                     category.setId(categoryId);
                     category.setName(resultSet.getString("categoria_nombre"));
-                    category.setDescription(resultSet.getString("categoria_descripcion"));
                     product.setCategory(category);
                 }
                 
@@ -136,7 +135,6 @@ public class Controller {
                 Category category = new Category();
                 category.setId(resultSet.getInt("id_categoria"));
                 category.setName(resultSet.getString("nombre"));
-                category.setDescription(resultSet.getString("descripcion"));
                 categories.add(category);
             }
         }

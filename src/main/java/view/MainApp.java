@@ -807,7 +807,7 @@ public class MainApp extends Application {
         dialog.showAndWait().ifPresent(name -> {
             if (!name.trim().isEmpty()) {
                 try {
-                    Category category = new Category(0, name.trim(), "");
+                    Category category = new Category(0, name.trim());
                     controller.executeCommand(CommandType.ADD_CATEGORY, category);
                     appendOutput("✓ Categoría creada: " + name);
                     updateAllCharts();
@@ -1023,19 +1023,14 @@ public class MainApp extends Application {
             TableColumn<Category, String> nameCol = new TableColumn<>("Nombre");
             nameCol.setCellValueFactory(cellData -> 
                 new javafx.beans.property.SimpleStringProperty(cellData.getValue().getName()));
-            nameCol.setPrefWidth(200);
+            nameCol.setPrefWidth(350);
             
-            TableColumn<Category, String> descCol = new TableColumn<>("Descripción");
-            descCol.setCellValueFactory(cellData -> 
-                new javafx.beans.property.SimpleStringProperty(cellData.getValue().getDescription()));
-            descCol.setPrefWidth(350);
-            
-            table.getColumns().addAll(idCol, nameCol, descCol);
+            table.getColumns().addAll(idCol, nameCol);
             
             // Set table properties
             table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
             table.setPrefHeight(400);
-            table.setPrefWidth(650);
+            table.setPrefWidth(450);
             
             VBox content = new VBox(10);
             content.setPadding(new Insets(10));

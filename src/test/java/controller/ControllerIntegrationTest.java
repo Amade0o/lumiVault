@@ -35,7 +35,7 @@ class ControllerIntegrationTest {
     @Test
     void shouldAddAndRetrieveCategory() throws SQLException {
         // Given
-        Category category = new Category(0, "Electronics", "Electronic devices");
+        Category category = new Category(0, "Electronics");
 
         // When
         controller.executeCommand(CommandType.ADD_CATEGORY, category);
@@ -46,13 +46,12 @@ class ControllerIntegrationTest {
         assertThat(categoryId).isGreaterThan(0);
         assertThat(categories).hasSize(1);
         assertThat(categories.get(0).getName()).isEqualTo("Electronics");
-        assertThat(categories.get(0).getDescription()).isEqualTo("Electronic devices");
     }
 
     @Test
     void shouldAddAndRetrieveProduct() throws SQLException {
         // Given
-        Category category = new Category(0, "Test Category", "Test");
+        Category category = new Category(0, "Test Category");
         controller.executeCommand(CommandType.ADD_CATEGORY, category);
         int categoryId = category.getId();
         category.setId(categoryId);
@@ -77,7 +76,7 @@ class ControllerIntegrationTest {
     @Test
     void shouldRemoveCategory() throws SQLException {
         // Given
-        Category category = new Category(0, "To Remove", "Will be removed");
+        Category category = new Category(0, "To Remove");
         controller.executeCommand(CommandType.ADD_CATEGORY, category);
         int categoryId = category.getId();
 
@@ -123,7 +122,6 @@ class ControllerIntegrationTest {
         movement.setProduct(movementProduct);
         movement.setQuantity(5);
         movement.setType(Movement.MovementType.STOCK_ENTRY);
-        movement.setDescription("Test movement");
         movement.setDateTime(null);
 
         // When
@@ -156,7 +154,6 @@ class ControllerIntegrationTest {
         movement.setProduct(movementProduct);
         movement.setQuantity(3);
         movement.setType(Movement.MovementType.STOCK_EXIT);
-        movement.setDescription("Test stock removal");
         movement.setDateTime(null);
 
         // When
@@ -179,9 +176,9 @@ class ControllerIntegrationTest {
     @Test
     void shouldHandleMultipleCategories() throws SQLException {
         // Given
-        Category cat1 = new Category(0, "Category 1", "First category");
-        Category cat2 = new Category(0, "Category 2", "Second category");
-        Category cat3 = new Category(0, "Category 3", "Third category");
+        Category cat1 = new Category(0, "Category 1");
+        Category cat2 = new Category(0, "Category 2");
+        Category cat3 = new Category(0, "Category 3");
 
         // When
         controller.executeCommand(CommandType.ADD_CATEGORY, cat1);
@@ -254,14 +251,12 @@ class ControllerIntegrationTest {
         movement1.setProduct(movementProduct);
         movement1.setQuantity(5);
         movement1.setType(Movement.MovementType.STOCK_ENTRY);
-        movement1.setDescription("Test entry");
         movement1.setDateTime(null);
         
         Movement movement2 = new Movement();
         movement2.setProduct(movementProduct);
         movement2.setQuantity(3);
         movement2.setType(Movement.MovementType.STOCK_EXIT);
-        movement2.setDescription("Test exit");
         movement2.setDateTime(null);
 
         controller.executeCommand(CommandType.ADD_STOCK, movement1);
@@ -296,7 +291,7 @@ class ControllerIntegrationTest {
     @Test
     void shouldHandleCategoryWithProducts() throws SQLException {
         // Given
-        Category category = new Category(0, "Category with products", "Has products");
+        Category category = new Category(0, "Category with products");
         controller.executeCommand(CommandType.ADD_CATEGORY, category);
         int categoryId = category.getId();
         category.setId(categoryId);
@@ -321,7 +316,7 @@ class ControllerIntegrationTest {
     @Test
     void shouldUpdateProductPrices() throws SQLException {
         // Given - Create a category and product first
-        Category category = new Category(0, "Price Test", "Test prices");
+        Category category = new Category(0, "Price Test");
         controller.executeCommand(CommandType.ADD_CATEGORY, category);
         category.setId(category.getId());
 
@@ -371,7 +366,7 @@ class ControllerIntegrationTest {
     @Test
     void shouldFailToUpdatePriceWithNegativeCost() throws SQLException {
         // Given - Create a product first
-        Category category = new Category(0, "Test", "Test");
+        Category category = new Category(0, "Test");
         controller.executeCommand(CommandType.ADD_CATEGORY, category);
         category.setId(category.getId());
 
@@ -392,7 +387,7 @@ class ControllerIntegrationTest {
     @Test
     void shouldFailToUpdatePriceWithSalePriceLowerThanCost() throws SQLException {
         // Given - Create a product first
-        Category category = new Category(0, "Test", "Test");
+        Category category = new Category(0, "Test");
         controller.executeCommand(CommandType.ADD_CATEGORY, category);
         category.setId(category.getId());
 

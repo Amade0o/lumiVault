@@ -25,7 +25,7 @@ class AddProductCommandTest {
     @Test
     void shouldHandleProductWithCategory() {
         // Given
-        Category category = new Category(1, "Electronics", "Electronic items");
+        Category category = new Category(1, "Electronics");
         Product product = ProductFactory.createProduct("Laptop", 500.0, 700.0, 10, category);
 
         // When

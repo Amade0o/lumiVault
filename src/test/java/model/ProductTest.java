@@ -8,7 +8,7 @@ class ProductTest {
     @Test
     void shouldCreateProductWithValidData() {
         // Given
-        Category category = new Category(1, "Electronics", "Electronic items");
+        Category category = new Category(1, "Electronics");
 
         // When
         Product product = new Product("1234567890123", "Laptop", 500.0, 700.0, 10, category);
@@ -40,7 +40,7 @@ class ProductTest {
     void shouldSetAndGetProperties() {
         // Given
         Product product = new Product();
-        Category category = new Category(1, "Test", "Test category");
+        Category category = new Category(1, "Test");
 
         // When
         product.setId("9876543210987");

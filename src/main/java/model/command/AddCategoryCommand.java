@@ -41,8 +41,8 @@ public class AddCategoryCommand implements Command {
         validateCategory();
         
         String insertCategorySql = """
-            INSERT INTO categoria (nombre, descripcion)
-            VALUES (?, ?)
+            INSERT INTO categoria (nombre)
+            VALUES (?)
             """;
 
         Connection connection = DatabaseConnection.getInstance().getConnection();
@@ -51,7 +51,6 @@ public class AddCategoryCommand implements Command {
                 insertCategorySql, Statement.RETURN_GENERATED_KEYS)) {
 
             statement.setString(1, categoryToAdd.getName());
-            statement.setString(2, categoryToAdd.getDescription());
 
             statement.executeUpdate();
 
@@ -76,7 +75,6 @@ public class AddCategoryCommand implements Command {
         Category categoryWithId = new Category();
         categoryWithId.setId(categoryId);
         categoryWithId.setName(categoryToAdd.getName());
-        categoryWithId.setDescription(categoryToAdd.getDescription());
         
         Movement categoryCreatedMovement = new Movement();
         categoryCreatedMovement.setCategory(categoryWithId);

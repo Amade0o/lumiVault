@@ -59,7 +59,7 @@ class PerformanceAndStressTest {
 
         // When
         for (int i = 0; i < numberOfCategories; i++) {
-            Category category = new Category(0, "Category" + i, "Description" + i);
+            Category category = new Category(0, "Category" + i);
             controller.executeCommand(CommandType.ADD_CATEGORY, category);
         }
 
@@ -90,7 +90,6 @@ class PerformanceAndStressTest {
             movement.setProduct(movementProduct);
             movement.setQuantity(1);
             movement.setType(type);
-            movement.setDescription("Performance test movement");
             movement.setDateTime(null);
             controller.executeCommand(CommandType.ADD_STOCK, movement);
         }
@@ -109,7 +108,7 @@ class PerformanceAndStressTest {
 
         // When - Create categories
         for (int i = 0; i < numberOfCategories; i++) {
-            Category category = new Category(0, "Category" + i, "Description" + i);
+            Category category = new Category(0, "Category" + i);
             controller.executeCommand(CommandType.ADD_CATEGORY, category);
         }
 
@@ -157,14 +156,13 @@ class PerformanceAndStressTest {
         String longDescription = "B".repeat(5000);
 
         // When
-        Category category = new Category(0, "Long Description Category", longDescription);
+        Category category = new Category(0, "Long Description Category");
         controller.executeCommand(CommandType.ADD_CATEGORY, category);
         int categoryId = category.getId();
 
         // Then
         List<Category> categories = controller.getAllCategories();
         assertThat(categories).hasSize(1);
-        assertThat(categories.get(0).getDescription()).isEqualTo(longDescription);
         assertThat(categories.get(0).getId()).isEqualTo(categoryId);
     }
 
@@ -210,7 +208,7 @@ class PerformanceAndStressTest {
                     controller.executeCommand(CommandType.ADD_PRODUCT, product);
                 }
                 case 1 -> { // Add category
-                    Category category = new Category(0, "StressCat" + i, "Description");
+                    Category category = new Category(0, "StressCat" + i);
                     controller.executeCommand(CommandType.ADD_CATEGORY, category);
                 }
                 case 2 -> { // List products

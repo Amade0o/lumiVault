@@ -129,7 +129,7 @@ public class ConsoleApp {
             }
 
             int categoryId = getIntInput("Category ID (0 for no category): ");
-            Category category = categoryId > 0 ? new Category(categoryId, "", "") : null;
+            Category category = categoryId > 0 ? new Category(categoryId, "") : null;
 
             Product product = ProductFactory.createProduct(name, costPrice, salePrice, stock, category);
             product.setId(productId); // Set the barcode ID
@@ -147,9 +147,8 @@ public class ConsoleApp {
             System.out.println("\n--- Add New Category ---");
 
             String name = getStringInput("Category name: ");
-            String description = getStringInput("Description: ");
 
-            Category category = new Category(0, name, description);
+            Category category = new Category(0, name);
             controller.executeCommand(CommandType.ADD_CATEGORY, category);
 
             System.out.println("✓ Category created successfully");
@@ -196,10 +195,9 @@ public class ConsoleApp {
             }
 
             for (Category category : categories) {
-                System.out.printf("ID: %d | %s | %s%n",
+                System.out.printf("ID: %d | %s%n",
                     category.getId(),
-                    category.getName(),
-                    category.getDescription());
+                    category.getName());
             }
 
         } catch (Exception e) {

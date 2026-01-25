@@ -42,9 +42,9 @@ class EndToEndIntegrationTest {
     void shouldCompleteFullInventoryLifecycle() throws SQLException {
         // === PHASE 1: System Setup ===
         // Create categories
-        Category electronics = new Category(0, "Electronics", "Electronic devices and accessories");
-        Category clothing = new Category(0, "Clothing", "Apparel and fashion items");
-        Category books = new Category(0, "Books", "Reading materials and publications");
+        Category electronics = new Category(0, "Electronics");
+        Category clothing = new Category(0, "Clothing");
+        Category books = new Category(0, "Books");
 
         controller.executeCommand(CommandType.ADD_CATEGORY, electronics);
         int electronicsId = electronics.getId();
@@ -55,9 +55,9 @@ class EndToEndIntegrationTest {
 
         // === PHASE 2: Initial Inventory Setup ===
         // Add initial products
-        Category electronicsCat = new Category(electronicsId, "Electronics", "");
-        Category clothingCat = new Category(clothingId, "Clothing", "");
-        Category booksCat = new Category(booksId, "Books", "");
+        Category electronicsCat = new Category(electronicsId, "Electronics");
+        Category clothingCat = new Category(clothingId, "Clothing");
+        Category booksCat = new Category(booksId, "Books");
 
         Product laptop = ProductFactory.createProduct("Gaming Laptop", 800.0, 1200.0, 5, electronicsCat);
         laptop.setId("2001000000001");
@@ -133,9 +133,9 @@ class EndToEndIntegrationTest {
         // Scenario: Online store inventory management
 
         // Setup categories
-        Category electronics = new Category(0, "Electronics", "Tech products");
-        Category accessories = new Category(0, "Accessories", "Product accessories");
-        Category consumables = new Category(0, "Consumables", "Consumable items");
+        Category electronics = new Category(0, "Electronics");
+        Category accessories = new Category(0, "Accessories");
+        Category consumables = new Category(0, "Consumables");
 
         controller.executeCommand(CommandType.ADD_CATEGORY, electronics);
         int electronicsId = electronics.getId();
@@ -145,8 +145,8 @@ class EndToEndIntegrationTest {
         int consumablesId = consumables.getId();
 
         // Setup products with relationships
-        Category electronicsCat = new Category(electronicsId, "Electronics", "");
-        Category accessoriesCat = new Category(accessoriesId, "Accessories", "");
+        Category electronicsCat = new Category(electronicsId, "Electronics");
+        Category accessoriesCat = new Category(accessoriesId, "Accessories");
 
         // Main products
         Product phone = ProductFactory.createProduct("Smartphone", 300.0, 500.0, 10, electronicsCat);
@@ -201,11 +201,11 @@ class EndToEndIntegrationTest {
         // Test referential integrity and data consistency
 
         // Create category and product
-        Category category = new Category(0, "Test Category", "For integrity testing");
+        Category category = new Category(0, "Test Category");
         controller.executeCommand(CommandType.ADD_CATEGORY, category);
         int categoryId = category.getId();
 
-        Category categoryRef = new Category(categoryId, "Test Category", "");
+        Category categoryRef = new Category(categoryId, "Test Category");
         Product product = ProductFactory.createProduct("Integrity Product", 10.0, 15.0, 5, categoryRef);
         product.setId("2008000000008");
         controller.executeCommand(CommandType.ADD_PRODUCT, product);
@@ -255,7 +255,6 @@ class EndToEndIntegrationTest {
         movement.setProduct(movementProduct);
         movement.setQuantity(quantity);
         movement.setType(type);
-        movement.setDescription("Test movement");
         movement.setDateTime(null);
         controller.executeCommand(CommandType.ADD_STOCK, movement);
     }

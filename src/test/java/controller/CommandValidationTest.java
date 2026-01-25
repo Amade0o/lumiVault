@@ -179,7 +179,7 @@ class CommandValidationTest {
     @Test
     @DisplayName("Should reject category with null name")
     void shouldRejectCategoryWithNullName() {
-        assertThatThrownBy(() -> new Category(0, null, "Description"))
+        assertThatThrownBy(() -> new Category(0, null))
             .isInstanceOf(IllegalArgumentException.class)
             .hasMessageContaining("Category name cannot be null or empty");
     }
@@ -187,7 +187,7 @@ class CommandValidationTest {
     @Test
     @DisplayName("Should reject category with empty name")
     void shouldRejectCategoryWithEmptyName() {
-        assertThatThrownBy(() -> new Category(0, "", "Description"))
+        assertThatThrownBy(() -> new Category(0, ""))
             .isInstanceOf(IllegalArgumentException.class)
             .hasMessageContaining("Category name cannot be null or empty");
     }
@@ -195,7 +195,7 @@ class CommandValidationTest {
     @Test
     @DisplayName("Should accept category with empty description")
     void shouldAcceptCategoryWithEmptyDescription() throws SQLException {
-        Category category = new Category(0, "Valid Category", "");
+        Category category = new Category(0, "Valid Category");
         
         assertThatCode(() -> controller.executeCommand(CommandType.ADD_CATEGORY, category))
             .doesNotThrowAnyException();
@@ -204,7 +204,7 @@ class CommandValidationTest {
     @Test
     @DisplayName("Should accept category with null description")
     void shouldAcceptCategoryWithNullDescription() throws SQLException {
-        Category category = new Category(0, "Valid Category", null);
+        Category category = new Category(0, "Valid Category");
         
         assertThatCode(() -> controller.executeCommand(CommandType.ADD_CATEGORY, category))
             .doesNotThrowAnyException();
@@ -214,7 +214,7 @@ class CommandValidationTest {
     @DisplayName("Should accept category with very long name")
     void shouldAcceptCategoryWithLongName() throws SQLException {
         String longName = "A".repeat(255); // Maximum reasonable length
-        Category category = new Category(0, longName, "Description");
+        Category category = new Category(0, longName);
         
         assertThatCode(() -> controller.executeCommand(CommandType.ADD_CATEGORY, category))
             .doesNotThrowAnyException();
@@ -224,8 +224,8 @@ class CommandValidationTest {
     @DisplayName("Should reject duplicate category names")
     void shouldRejectDuplicateCategoryNames() throws SQLException {
         // Categories have UNIQUE constraint on name in test database
-        Category category1 = new Category(0, "Electronics", "Desc 1");
-        Category category2 = new Category(0, "Electronics", "Desc 2");
+        Category category1 = new Category(0, "Electronics");
+        Category category2 = new Category(0, "Electronics");
         
         controller.executeCommand(CommandType.ADD_CATEGORY, category1);
         
@@ -309,7 +309,7 @@ class CommandValidationTest {
     @Test
     @DisplayName("Should remove category and nullify product references")
     void shouldRemoveCategoryAndNullifyProductReferences() throws SQLException {
-        Category category = new Category(0, "Test Cat", "Desc");
+        Category category = new Category(0, "Test Cat");
         controller.executeCommand(CommandType.ADD_CATEGORY, category);
         int categoryId = category.getId();
         
@@ -330,7 +330,7 @@ class CommandValidationTest {
     @Test
     @DisplayName("Should remove empty category")
     void shouldRemoveEmptyCategory() throws SQLException {
-        Category category = new Category(0, "Empty", "Desc");
+        Category category = new Category(0, "Empty");
         controller.executeCommand(CommandType.ADD_CATEGORY, category);
         int categoryId = category.getId();
         

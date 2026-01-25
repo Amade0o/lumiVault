@@ -10,7 +10,7 @@ class AddCategoryCommandTest {
     @Test
     void shouldCreateAddCategoryCommandWithCategory() {
         // Given
-        Category category = new Category(0, "Test Category", "Test description");
+        Category category = new Category(0, "Test Category");
 
         // When
         AddCategoryCommand command = new AddCategoryCommand(category);
@@ -23,7 +23,7 @@ class AddCategoryCommandTest {
     @Test
     void shouldHandleCategoryWithNullDescription() {
         // Given
-        Category category = new Category(0, "Test Category", null);
+        Category category = new Category(0, "Test Category");
 
         // When
         AddCategoryCommand command = new AddCategoryCommand(category);
@@ -35,7 +35,7 @@ class AddCategoryCommandTest {
     @Test
     void shouldHandleCategoryWithEmptyDescription() {
         // Given
-        Category category = new Category(0, "Test Category", "");
+        Category category = new Category(0, "Test Category");
 
         // When
         AddCategoryCommand command = new AddCategoryCommand(category);

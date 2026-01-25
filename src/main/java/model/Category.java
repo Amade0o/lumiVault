@@ -8,17 +8,15 @@ public class Category {
     
     private int id;
     private String name;
-    private String description;
 
     /** Empty constructor */
     public Category() {
     }
 
     /** Full constructor with all fields */
-    public Category(int id, String name, String description) {
+    public Category(int id, String name) {
         this.id = id;
         setName(name);
-        this.description = description;
     }
 
     // ==================== GETTERS ====================
@@ -29,10 +27,6 @@ public class Category {
     
     public String getName() { 
         return name; 
-    }
-    
-    public String getDescription() { 
-        return description; 
     }
 
     // ==================== SETTERS ====================
@@ -46,10 +40,6 @@ public class Category {
             throw new IllegalArgumentException("Category name cannot be null or empty");
         }
         this.name = name;
-    }
-    
-    public void setDescription(String description) { 
-        this.description = description; 
     }
 
     /** Returns name for display in UI components like ComboBox */

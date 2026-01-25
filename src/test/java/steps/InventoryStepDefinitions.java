@@ -59,7 +59,7 @@ public class InventoryStepDefinitions {
 
     @Given("a category {string} exists")
     public void aCategoryExists(String categoryName) throws SQLException {
-        Category category = new Category(0, categoryName, "Test description");
+        Category category = new Category(0, categoryName);
         controller.executeCommand(CommandType.ADD_CATEGORY, category);
         int id = category.getId();
         categoryIds.put(categoryName, id);
@@ -89,7 +89,7 @@ public class InventoryStepDefinitions {
         String categoryName = categoryIds.keySet().iterator().next();
         int categoryId = categoryIds.get(categoryName);
 
-        Category category = new Category(categoryId, categoryName, "");
+        Category category = new Category(categoryId, categoryName);
         Product product = ProductFactory.createProduct("Product in " + categoryName, 10.0, 15.0, 5, category);
         controller.executeCommand(CommandType.ADD_PRODUCT, product);
     }
@@ -115,7 +115,7 @@ public class InventoryStepDefinitions {
             int categoryId = categoryIds.get(categoryName);
             assertThat(categoryId).isNotNull();
 
-            Category category = new Category(categoryId, categoryName, "");
+            Category category = new Category(categoryId, categoryName);
             Product product = ProductFactory.createProduct(productName, costPrice, salePrice, stock, category);
             product.setId(String.format("%013d", productIds.size() + 1000)); // Generate unique barcode
             controller.executeCommand(CommandType.ADD_PRODUCT, product);
@@ -131,7 +131,7 @@ public class InventoryStepDefinitions {
     @When("I add a category with name {string} and description {string}")
     public void iAddACategoryWithDescription(String name, String description) {
         try {
-            Category category = new Category(0, name, description);
+            Category category = new Category(0, name);
             controller.executeCommand(CommandType.ADD_CATEGORY, category);
         int id = category.getId();
             categoryIds.put(name, id);
@@ -145,7 +145,7 @@ public class InventoryStepDefinitions {
     @When("I add a category with name {string} and no description")
     public void iAddACategoryWithNoDescription(String name) {
         try {
-            Category category = new Category(0, name, null);
+            Category category = new Category(0, name);
             controller.executeCommand(CommandType.ADD_CATEGORY, category);
         int id = category.getId();
             categoryIds.put(name, id);

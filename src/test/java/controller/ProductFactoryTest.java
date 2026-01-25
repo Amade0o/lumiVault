@@ -11,7 +11,7 @@ class ProductFactoryTest {
     @Test
     void shouldCreateProductWithAllParameters() {
         // Given
-        Category category = new Category(1, "Electronics", "Electronic items");
+        Category category = new Category(1, "Electronics");
 
         // When
         Product product = ProductFactory.createProduct("Laptop", 500.0, 700.0, 10, category);

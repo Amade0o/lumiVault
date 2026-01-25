@@ -8,12 +8,11 @@ class CategoryTest {
     @Test
     void shouldCreateCategoryWithValidData() {
         // Given & When
-        Category category = new Category(1, "Electronics", "Electronic devices and accessories");
+        Category category = new Category(1, "Electronics");
 
         // Then
         assertThat(category.getId()).isEqualTo(1);
         assertThat(category.getName()).isEqualTo("Electronics");
-        assertThat(category.getDescription()).isEqualTo("Electronic devices and accessories");
     }
 
     @Test
@@ -24,7 +23,6 @@ class CategoryTest {
         // Then
         assertThat(category.getId()).isEqualTo(0);
         assertThat(category.getName()).isNull();
-        assertThat(category.getDescription()).isNull();
     }
 
     @Test
@@ -35,12 +33,10 @@ class CategoryTest {
         // When
         category.setId(5);
         category.setName("Test Category");
-        category.setDescription("Test description");
 
         // Then
         assertThat(category.getId()).isEqualTo(5);
         assertThat(category.getName()).isEqualTo("Test Category");
-        assertThat(category.getDescription()).isEqualTo("Test description");
     }
 
     @Test
@@ -82,10 +78,8 @@ class CategoryTest {
         Category category = new Category();
 
         // When
-        category.setDescription(null);
 
         // Then
-        assertThat(category.getDescription()).isNull();
     }
 
     @Test
@@ -94,10 +88,8 @@ class CategoryTest {
         Category category = new Category();
 
         // When
-        category.setDescription("");
 
         // Then
-        assertThat(category.getDescription()).isEqualTo("");
     }
 
     @Test
@@ -107,10 +99,9 @@ class CategoryTest {
         String longDescription = "B".repeat(2000);
 
         // When
-        Category category = new Category(1, longName, longDescription);
+        Category category = new Category(1, longName);
 
         // Then
         assertThat(category.getName()).isEqualTo(longName);
-        assertThat(category.getDescription()).isEqualTo(longDescription);
     }
 }
