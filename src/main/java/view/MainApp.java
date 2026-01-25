@@ -651,6 +651,13 @@ public class MainApp extends Application {
             dialog.close();
         });
         
+        Button updatePriceBtn = new Button("💰 Actualizar Precio de Producto");
+        updatePriceBtn.setMaxWidth(Double.MAX_VALUE);
+        updatePriceBtn.setOnAction(e -> {
+            updatePrice();
+            dialog.close();
+        });
+        
         Button listProdBtn = new Button("📋 Listar Todos los Productos");
         listProdBtn.setMaxWidth(Double.MAX_VALUE);
         listProdBtn.setOnAction(e -> {
@@ -658,7 +665,7 @@ public class MainApp extends Application {
             dialog.close();
         });
         
-        content.getChildren().addAll(addProdBtn, listProdBtn);
+        content.getChildren().addAll(addProdBtn, updatePriceBtn, listProdBtn);
         
         dialog.getDialogPane().setContent(content);
         dialog.getDialogPane().getButtonTypes().add(ButtonType.CLOSE);
@@ -899,6 +906,63 @@ public class MainApp extends Application {
         } catch (SQLException e) {
             showError("Error", "No se pudieron listar las categorías: " + e.getMessage());
         }
+    }
+
+    private void updatePrice() {
+        // Dialog for product ID
+        TextInputDialog idDialog = new TextInputDialog();
+        idDialog.setTitle("Actualizar Precio");
+        idDialog.setHeaderText("Actualizar Precio de Producto");
+        idDialog.setContentText("ID del producto (código de barras):");
+
+        idDialog.showAndWait().ifPresent(productId -> {
+            if (!productId.trim().isEmpty()) {
+                // Dialog for new cost price
+                TextInputDialog costDialog = new TextInputDialog();
+                costDialog.setTitle("Precio de Costo");
+                costDialog.setHeaderText("Nuevo Precio de Costo");
+                costDialog.setContentText("Nuevo precio de costo:");
+
+                costDialog.showAndWait().ifPresent(costStr -> {
+                    try {
+                        double newCostPrice = Double.parseDouble(costStr.trim());
+
+                        // Dialog for new sale price
+                        TextInputDialog saleDialog = new TextInputDialog();
+                        saleDialog.setTitle("Precio de Venta");
+                        saleDialog.setHeaderText("Nuevo Precio de Venta");
+                        saleDialog.setContentText("Nuevo precio de venta:");
+
+                        saleDialog.showAndWait().ifPresent(saleStr -> {
+                            try {
+                                double newSalePrice = Double.parseDouble(saleStr.trim());
+
+                                // Create product object with ID
+                                Product product = new Product();
+                                product.setId(productId.trim());
+
+                                // Execute update price command
+                                Object[] priceData = {product, newCostPrice, newSalePrice};
+                                controller.executeCommand(CommandType.UPDATE_PRICE, priceData);
+                                
+                                appendOutput(String.format("✓ Precios actualizados para producto ID %s: Costo=$%.2f, Venta=$%.2f",
+                                    productId.trim(), newCostPrice, newSalePrice));
+                                updateAllCharts();
+                            } catch (NumberFormatException e) {
+                                showError("Error", "Precio de venta debe ser un número válido.");
+                            } catch (SQLException e) {
+                                showError("Error", "No se pudo actualizar el precio: " + e.getMessage());
+                            }
+                        });
+
+                    } catch (NumberFormatException e) {
+                        showError("Error", "Precio de costo debe ser un número válido.");
+                    }
+                });
+            } else {
+                showError("Error", "ID del producto no puede estar vacío.");
+            }
+        });
     }
 
     private void addStock() {

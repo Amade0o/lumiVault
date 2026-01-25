@@ -1,0 +1,315 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="Cucumber" time="2.191" tests="30" skipped="0" failures="26" errors="0">
+<testcase classname="Category Management" name="Add a new category" time="0.519">
+<failure type="java.lang.AssertionError" message="
+Expecting actual not to be null">
+<![CDATA[java.lang.AssertionError: 
+Expecting actual not to be null
+	at steps.InventoryStepDefinitions.iShouldBeAbleToRetrieveTheCategory(InventoryStepDefinitions.java:246)
+	at ✽.I should be able to retrieve the category(file:///home/amadeo/1_Apps/lumiVault/src/test/resources/features/CategoryManagement.feature:12)
+]]>
+</failure>
+<system-out><![CDATA[
+Given the inventory system is initialized...................................passed
+When I add a category with name "Electronics" and description "Electronic devices".passed
+Then the category should be saved successfully..............................passed
+And I should be able to retrieve the category...............................failed
+]]></system-out>
+</testcase>
+<testcase classname="Category Management" name="Add category without description" time="0.038">
+<system-out><![CDATA[
+Given the inventory system is initialized...................................passed
+When I add a category with name "Books" and no description..................passed
+Then the category should be saved successfully..............................passed
+And the category description should be null.................................passed
+]]></system-out>
+</testcase>
+<testcase classname="Category Management" name="List all categories" time="0.028">
+<failure/>
+<system-out><![CDATA[
+Given the inventory system is initialized...................................passed
+Given the following categories exist:.......................................undefined
+When I request all categories...............................................skipped
+Then I should see 3 categories..............................................skipped
+And the categories should include "Electronics", "Books", and "Clothing"....skipped
+]]></system-out>
+</testcase>
+<testcase classname="Category Management" name="Remove empty category" time="0.021">
+<failure/>
+<system-out><![CDATA[
+Given the inventory system is initialized...................................passed
+Given a category "Empty Category" exists with no products...................undefined
+When I remove the category "Empty Category".................................skipped
+Then the category should be removed successfully............................skipped
+]]></system-out>
+</testcase>
+<testcase classname="Category Management" name="Remove category with products" time="0.028">
+<failure type="java.sql.SQLException" message="Product ID must be provided (e.g., barcode)">
+<![CDATA[java.sql.SQLException: Product ID must be provided (e.g., barcode)
+	at model.command.AddProductCommand.insertProduct(AddProductCommand.java:51)
+	at model.command.AddProductCommand.execute(AddProductCommand.java:32)
+	at controller.Controller.executeCommand(Controller.java:68)
+	at steps.InventoryStepDefinitions.theCategoryHasProducts(InventoryStepDefinitions.java:94)
+	at ✽.the category has products(file:///home/amadeo/1_Apps/lumiVault/src/test/resources/features/CategoryManagement.feature:36)
+]]>
+</failure>
+<system-out><![CDATA[
+Given the inventory system is initialized...................................passed
+Given a category "Electronics" exists.......................................passed
+And the category has products...............................................failed
+When I remove the category "Electronics"....................................skipped
+Then the category should be removed.........................................skipped
+And the products should remain but without category.........................skipped
+]]></system-out>
+</testcase>
+<testcase classname="Category Management" name="Try to remove non-existent category" time="0.048">
+<system-out><![CDATA[
+Given the inventory system is initialized...................................passed
+When I try to remove a category with ID 999.................................passed
+Then the removal should fail................................................passed
+]]></system-out>
+</testcase>
+<testcase classname="Category Management" name="Category with long description" time="0.023">
+<failure/>
+<system-out><![CDATA[
+Given the inventory system is initialized...................................passed
+When I add a category with name "Long Description" and a very long description.undefined
+Then the category should be saved successfully..............................skipped
+And the full description should be preserved................................skipped
+]]></system-out>
+</testcase>
+<testcase classname="Inventory Reports" name="Empty inventory report" time="0.03">
+<failure/>
+<system-out><![CDATA[
+Given the inventory system is initialized...................................passed
+When I request an inventory report..........................................undefined
+Then the report should show no products.....................................skipped
+And the report should show no categories....................................skipped
+And total inventory value should be 0.......................................skipped
+]]></system-out>
+</testcase>
+<testcase classname="Inventory Reports" name="Inventory with single product" time="0.048">
+<failure/>
+<system-out><![CDATA[
+Given the inventory system is initialized...................................passed
+Given a product "Single Product" exists with cost price 10.00, sale price 15.00, and stock 5.passed
+When I request an inventory report..........................................undefined
+Then the report should show 1 product.......................................skipped
+And total inventory value should be 50.00 (cost) and 75.00 (sale)...........skipped
+And the report should include product details...............................skipped
+]]></system-out>
+</testcase>
+<testcase classname="Inventory Reports" name="Inventory with multiple products" time="0.019">
+<failure/>
+<system-out><![CDATA[
+Given the inventory system is initialized...................................passed
+Given the following products exist:.........................................undefined
+When I request an inventory report..........................................skipped
+Then the report should show 3 products......................................skipped
+And total cost value should be 100.00.......................................skipped
+And total sale value should be 145.00.......................................skipped
+]]></system-out>
+</testcase>
+<testcase classname="Inventory Reports" name="Inventory with categories" time="0.024">
+<failure/>
+<system-out><![CDATA[
+Given the inventory system is initialized...................................passed
+Given the following categories exist:.......................................undefined
+And products exist in each category.........................................skipped
+When I request an inventory report..........................................skipped
+Then the report should show products grouped by category....................skipped
+And each category should show its products..................................skipped
+]]></system-out>
+</testcase>
+<testcase classname="Inventory Reports" name="Low stock report" time="0.02">
+<failure/>
+<system-out><![CDATA[
+Given the inventory system is initialized...................................passed
+Given products with various stock levels:...................................undefined
+When I request a low stock report with threshold 5..........................skipped
+Then the report should show "Low Stock" and "Out of Stock" products.........skipped
+And should not show "Normal" product........................................skipped
+]]></system-out>
+</testcase>
+<testcase classname="Inventory Reports" name="Product search" time="0.021">
+<failure/>
+<system-out><![CDATA[
+Given the inventory system is initialized...................................passed
+Given multiple products exist with different names..........................undefined
+When I search for products containing "lap".................................skipped
+Then I should see products with "laptop" in the name........................skipped
+And should not see products without "lap" in the name.......................skipped
+]]></system-out>
+</testcase>
+<testcase classname="Inventory Reports" name="Category summary report" time="0.022">
+<failure/>
+<system-out><![CDATA[
+Given the inventory system is initialized...................................passed
+Given categories with multiple products each................................undefined
+When I request a category summary...........................................skipped
+Then I should see each category with product count..........................skipped
+And total value per category................................................skipped
+And average stock per category..............................................skipped
+]]></system-out>
+</testcase>
+<testcase classname="Product Management" name="Add a new product" time="0.037">
+<failure type="java.lang.AssertionError" message="
+Expecting actual not to be null">
+<![CDATA[java.lang.AssertionError: 
+Expecting actual not to be null
+	at steps.InventoryStepDefinitions.iShouldBeAbleToRetrieveTheProductFromInventory(InventoryStepDefinitions.java:240)
+	at ✽.I should be able to retrieve the product from inventory(file:///home/amadeo/1_Apps/lumiVault/src/test/resources/features/ProductManagement.feature:12)
+]]>
+</failure>
+<system-out><![CDATA[
+Given the inventory system is initialized...................................passed
+When I add a product with name "Laptop", cost price 500.00, sale price 700.00, and stock 10.passed
+Then the product should be saved successfully...............................passed
+And I should be able to retrieve the product from inventory.................failed
+]]></system-out>
+</testcase>
+<testcase classname="Product Management" name="Add product with category" time="0.118">
+<system-out><![CDATA[
+Given the inventory system is initialized...................................passed
+Given a category "Electronics" exists.......................................passed
+When I add a product "Mouse" with cost price 10.00, sale price 15.00, stock 5, and category "Electronics".passed
+Then the product should be saved with the category..........................passed
+And the product should appear in category listings..........................passed
+]]></system-out>
+</testcase>
+<testcase classname="Product Management" name="List all products" time="0.023">
+<failure/>
+<system-out><![CDATA[
+Given the inventory system is initialized...................................passed
+Given the following products exist:.........................................undefined
+When I request all products.................................................skipped
+Then I should see 3 products................................................skipped
+And the products should include "Laptop", "Mouse", and "Keyboard"...........skipped
+]]></system-out>
+</testcase>
+<testcase classname="Product Management" name="Remove existing product" time="0.025">
+<failure/>
+<system-out><![CDATA[
+Given the inventory system is initialized...................................passed
+Given a product "Old Product" exists with stock 5...........................undefined
+When I remove the product "Old Product".....................................skipped
+Then the product should be removed from inventory...........................skipped
+And the product should not appear in listings...............................skipped
+]]></system-out>
+</testcase>
+<testcase classname="Product Management" name="Try to remove non-existent product" time="0.03">
+<system-out><![CDATA[
+Given the inventory system is initialized...................................passed
+When I try to remove a product with ID 999..................................passed
+Then the removal should fail................................................passed
+And I should get an error message...........................................passed
+]]></system-out>
+</testcase>
+<testcase classname="Product Management" name="Product with zero stock" time="0.019">
+<failure/>
+<system-out><![CDATA[
+Given the inventory system is initialized...................................passed
+When I add a product "Out of Stock" with cost price 10.00, sale price 15.00, and stock 0.undefined
+Then the product should be saved successfully...............................skipped
+And the stock should be 0...................................................skipped
+]]></system-out>
+</testcase>
+<testcase classname="Product Management" name="Product with zero prices" time="0.019">
+<failure/>
+<system-out><![CDATA[
+Given the inventory system is initialized...................................passed
+When I add a product "Free Item" with cost price 0.00, sale price 0.00, and stock 1.undefined
+Then the product should be saved successfully...............................skipped
+And both prices should be 0.00..............................................skipped
+]]></system-out>
+</testcase>
+<testcase classname="Stock Movement Management" name="Record stock entry" time="0.032">
+<failure/>
+<system-out><![CDATA[
+Given the inventory system is initialized...................................passed
+And a product "Test Product" exists with initial stock 10...................passed
+When I record a stock entry of 5 units for "Test Product"...................undefined
+Then the movement should be recorded successfully...........................skipped
+And the stock movement history should show the entry........................skipped
+]]></system-out>
+</testcase>
+<testcase classname="Stock Movement Management" name="Record stock exit" time="0.039">
+<failure/>
+<system-out><![CDATA[
+Given the inventory system is initialized...................................passed
+And a product "Test Product" exists with initial stock 10...................passed
+When I record a stock exit of 3 units for "Test Product"....................undefined
+Then the movement should be recorded successfully...........................skipped
+And the stock movement history should show the exit.........................skipped
+]]></system-out>
+</testcase>
+<testcase classname="Stock Movement Management" name="View movement history for product" time="0.023">
+<failure/>
+<system-out><![CDATA[
+Given the inventory system is initialized...................................passed
+And a product "Test Product" exists with initial stock 10...................passed
+Given the following movements exist for "Test Product":.....................undefined
+When I request the movement history for "Test Product"......................skipped
+Then I should see 3 movements...............................................skipped
+And the movements should be ordered by date.................................skipped
+]]></system-out>
+</testcase>
+<testcase classname="Stock Movement Management" name="Multiple products with movements" time="0.023">
+<failure/>
+<system-out><![CDATA[
+Given the inventory system is initialized...................................passed
+And a product "Test Product" exists with initial stock 10...................passed
+Given a product "Product A" exists with stock 5.............................undefined
+And a product "Product B" exists with stock 8...............................skipped
+When I record movements for both products...................................skipped
+Then each product should have its own movement history......................skipped
+And movement histories should not be mixed..................................skipped
+]]></system-out>
+</testcase>
+<testcase classname="Stock Movement Management" name="Movement with large quantity" time="0.022">
+<failure/>
+<system-out><![CDATA[
+Given the inventory system is initialized...................................passed
+And a product "Test Product" exists with initial stock 10...................passed
+When I record a stock entry of 10000 units for "Test Product"...............undefined
+Then the movement should be recorded successfully...........................skipped
+And the quantity should be stored correctly.................................skipped
+]]></system-out>
+</testcase>
+<testcase classname="Stock Movement Management" name="Movement with minimum quantity" time="0.018">
+<failure/>
+<system-out><![CDATA[
+Given the inventory system is initialized...................................passed
+And a product "Test Product" exists with initial stock 10...................passed
+When I record a stock entry of 1 unit for "Test Product"....................undefined
+Then the movement should be recorded successfully...........................skipped
+]]></system-out>
+</testcase>
+<testcase classname="Stock Movement Management" name="Try to record movement for non-existent product" time="0.021">
+<failure/>
+<system-out><![CDATA[
+Given the inventory system is initialized...................................passed
+And a product "Test Product" exists with initial stock 10...................passed
+When I try to record a movement for product ID 999..........................undefined
+Then the movement recording should fail.....................................skipped
+]]></system-out>
+</testcase>
+<testcase classname="Stock Movement Management" name="Movement with zero quantity should fail" time="0.018">
+<failure/>
+<system-out><![CDATA[
+Given the inventory system is initialized...................................passed
+And a product "Test Product" exists with initial stock 10...................passed
+When I try to record a movement with quantity 0.............................undefined
+Then the movement recording should fail with validation error...............skipped
+]]></system-out>
+</testcase>
+<testcase classname="Stock Movement Management" name="Movement with negative quantity should fail" time="0.028">
+<failure/>
+<system-out><![CDATA[
+Given the inventory system is initialized...................................passed
+And a product "Test Product" exists with initial stock 10...................passed
+When I try to record a movement with quantity -5............................undefined
+Then the movement recording should fail with validation error...............skipped
+]]></system-out>
+</testcase>
+</testsuite>

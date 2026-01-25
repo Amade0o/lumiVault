@@ -8,6 +8,7 @@ public enum CommandType {
     // Product operations
     ADD_PRODUCT,
     REMOVE_PRODUCT,
+    UPDATE_PRICE,
     
     // Category operations
     ADD_CATEGORY,

@@ -43,6 +43,14 @@ public class Controller {
             case REMOVE_PRODUCT:
                 command = new RemoveProductCommand((String) data);
                 break;
+            case UPDATE_PRICE:
+                // Expects Object[] with {Product, newCostPrice, newSalePrice}
+                Object[] priceData = (Object[]) data;
+                Product product = (Product) priceData[0];
+                double newCostPrice = (double) priceData[1];
+                double newSalePrice = (double) priceData[2];
+                command = new UpdatePriceCommand(product, newCostPrice, newSalePrice);
+                break;
             case ADD_CATEGORY:
                 command = new AddCategoryCommand((Category) data);
                 break;

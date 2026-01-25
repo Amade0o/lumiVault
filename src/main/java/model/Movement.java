@@ -24,6 +24,7 @@ public class Movement {
         PRODUCT_CREATED,
         PRODUCT_UPDATED,
         PRODUCT_DELETED,
+        PRICE_UPDATE,   // Price change for product
 
         // Category operations
         CATEGORY_CREATED,

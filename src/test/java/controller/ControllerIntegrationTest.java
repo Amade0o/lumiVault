@@ -317,4 +317,96 @@ class ControllerIntegrationTest {
         assertThat(products).hasSize(1);
         assertThat(products.get(0).getCategory()).isNull(); // Category should be set to null
     }
+
+    @Test
+    void shouldUpdateProductPrices() throws SQLException {
+        // Given - Create a category and product first
+        Category category = new Category(0, "Price Test", "Test prices");
+        controller.executeCommand(CommandType.ADD_CATEGORY, category);
+        category.setId(category.getId());
+
+        Product product = ProductFactory.createProduct("Test Product", 10.0, 15.0, 5, category);
+        product.setId("7777777777777");
+        controller.executeCommand(CommandType.ADD_PRODUCT, product);
+
+        // Verify initial prices
+        List<Product> products = controller.getAllProducts();
+        assertThat(products.get(0).getCostPrice()).isEqualTo(10.0);
+        assertThat(products.get(0).getSalePrice()).isEqualTo(15.0);
+
+        // When - Update prices
+        Product productToUpdate = new Product();
+        productToUpdate.setId("7777777777777");
+        double newCostPrice = 12.0;
+        double newSalePrice = 20.0;
+        Object[] priceData = {productToUpdate, newCostPrice, newSalePrice};
+        controller.executeCommand(CommandType.UPDATE_PRICE, priceData);
+
+        // Then - Verify prices were updated
+        products = controller.getAllProducts();
+        assertThat(products).hasSize(1);
+        assertThat(products.get(0).getCostPrice()).isEqualTo(12.0);
+        assertThat(products.get(0).getSalePrice()).isEqualTo(20.0);
+
+        // Verify movement was recorded
+        List<Movement> movements = controller.getAllMovements();
+        boolean hasPriceUpdateMovement = movements.stream()
+            .anyMatch(m -> "PRICE_UPDATE".equals(m.getType().toString()));
+        assertThat(hasPriceUpdateMovement).isTrue();
+    }
+
+    @Test
+    void shouldFailToUpdatePriceForNonExistentProduct() {
+        // Given
+        Product product = new Product();
+        product.setId("9999999999999");
+        Object[] priceData = {product, 10.0, 15.0};
+
+        // When/Then
+        assertThatThrownBy(() -> controller.executeCommand(CommandType.UPDATE_PRICE, priceData))
+            .isInstanceOf(SQLException.class)
+            .hasMessageContaining("no existe");
+    }
+
+    @Test
+    void shouldFailToUpdatePriceWithNegativeCost() throws SQLException {
+        // Given - Create a product first
+        Category category = new Category(0, "Test", "Test");
+        controller.executeCommand(CommandType.ADD_CATEGORY, category);
+        category.setId(category.getId());
+
+        Product product = ProductFactory.createProduct("Test Product", 10.0, 15.0, 5, category);
+        product.setId("6666666666666");
+        controller.executeCommand(CommandType.ADD_PRODUCT, product);
+
+        // When/Then - Try to update with negative cost
+        Product productToUpdate = new Product();
+        productToUpdate.setId("6666666666666");
+        Object[] priceData = {productToUpdate, -5.0, 15.0};
+
+        assertThatThrownBy(() -> controller.executeCommand(CommandType.UPDATE_PRICE, priceData))
+            .isInstanceOf(SQLException.class)
+            .hasMessageContaining("precio de costo no puede ser negativo");
+    }
+
+    @Test
+    void shouldFailToUpdatePriceWithSalePriceLowerThanCost() throws SQLException {
+        // Given - Create a product first
+        Category category = new Category(0, "Test", "Test");
+        controller.executeCommand(CommandType.ADD_CATEGORY, category);
+        category.setId(category.getId());
+
+        Product product = ProductFactory.createProduct("Test Product", 10.0, 15.0, 5, category);
+        product.setId("5555555555555");
+        controller.executeCommand(CommandType.ADD_PRODUCT, product);
+
+        // When/Then - Try to update with sale price lower than cost
+        Product productToUpdate = new Product();
+        productToUpdate.setId("5555555555555");
+        Object[] priceData = {productToUpdate, 20.0, 15.0};
+
+        assertThatThrownBy(() -> controller.executeCommand(CommandType.UPDATE_PRICE, priceData))
+            .isInstanceOf(SQLException.class)
+            .hasMessageContaining("precio de venta no puede ser menor que el precio de costo");
+    }
 }
