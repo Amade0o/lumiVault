@@ -77,7 +77,7 @@ public class AddCategoryCommand implements Command {
         categoryWithId.setName(categoryToAdd.getName());
         
         Movement categoryCreatedMovement = new Movement();
-        categoryCreatedMovement.setCategory(categoryWithId);
+
         categoryCreatedMovement.setType(Movement.MovementType.CATEGORY_CREATED);
         categoryCreatedMovement.setDescription("Categoría creada");
         categoryCreatedMovement.setDateTime(LocalDateTime.now());

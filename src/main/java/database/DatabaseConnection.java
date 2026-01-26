@@ -136,14 +136,12 @@ public class DatabaseConnection {
         String createMovementTableSql = """
             CREATE TABLE IF NOT EXISTS movimiento (
                 id_movimiento INTEGER PRIMARY KEY AUTOINCREMENT,
-                id_producto INTEGER,
-                id_categoria INTEGER,
+                id_producto TEXT,
                 cantidad INTEGER,
                 tipo TEXT NOT NULL,
                 descripcion TEXT,
                 fecha TEXT NOT NULL,
-                FOREIGN KEY (id_producto) REFERENCES producto(id_producto),
-                FOREIGN KEY (id_categoria) REFERENCES categoria(id_categoria)
+                FOREIGN KEY (id_producto) REFERENCES producto(id_producto)
             );
             """;
         

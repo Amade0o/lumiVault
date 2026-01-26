@@ -42,8 +42,8 @@ public class AddStockCommand implements Command {
         validateMovement();
         
         String insertMovementSql = """
-            INSERT INTO movimiento (id_producto, id_categoria, cantidad, tipo, descripcion, fecha)
-            VALUES (?, ?, ?, ?, ?, ?)
+            INSERT INTO movimiento (id_producto, cantidad, tipo, descripcion, fecha)
+            VALUES (?, ?, ?, ?, ?)
             """;
 
         Connection connection = DatabaseConnection.getInstance().getConnection();
@@ -57,25 +57,19 @@ public class AddStockCommand implements Command {
                 statement.setNull(1, java.sql.Types.VARCHAR);
             }
 
-            if (movement.getCategory() != null) {
-                statement.setInt(2, movement.getCategory().getId());
+            if (movement.getQuantity() != null) {
+                statement.setInt(2, movement.getQuantity());
             } else {
                 statement.setNull(2, java.sql.Types.INTEGER);
             }
 
-            if (movement.getQuantity() != null) {
-                statement.setInt(3, movement.getQuantity());
-            } else {
-                statement.setNull(3, java.sql.Types.INTEGER);
-            }
-
-            statement.setString(4, movement.getType().toString());
-            statement.setString(5, movement.getDescription());
+            statement.setString(3, movement.getType().toString());
+            statement.setString(4, movement.getDescription());
 
             if (movement.getDateTime() != null) {
-                statement.setString(6, movement.getDateTime().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
+                statement.setString(5, movement.getDateTime().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
             } else {
-                statement.setString(6, LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
+                statement.setString(5, LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
             }
 
             statement.executeUpdate();

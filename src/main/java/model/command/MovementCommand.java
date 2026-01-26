@@ -1,7 +1,6 @@
 package model.command;
 
 import database.DatabaseConnection;
-import model.Category;
 import model.Movement;
 import model.Product;
 
@@ -25,12 +24,10 @@ public class MovementCommand {
      */
     public static List<Movement> getMovementsForProduct(String productId) throws SQLException {
         String selectMovementsSql = """
-            SELECT m.id_movimiento, m.id_producto, m.id_categoria, m.cantidad, m.tipo, m.descripcion, m.fecha,
-                   p.id_producto, p.nombre,
-                   c.id_categoria, c.nombre as categoria_nombre
+            SELECT m.id_movimiento, m.id_producto, m.cantidad, m.tipo, m.descripcion, m.fecha,
+                   p.id_producto, p.nombre
             FROM movimiento m
             LEFT JOIN producto p ON m.id_producto = p.id_producto
-            LEFT JOIN categoria c ON m.id_categoria = c.id_categoria
             WHERE m.id_producto = ?
             ORDER BY m.fecha DESC
             """;
@@ -56,12 +53,10 @@ public class MovementCommand {
      */
     public static List<Movement> getAllMovements() throws SQLException {
         String selectAllMovementsSql = """
-            SELECT m.id_movimiento, m.id_producto, m.id_categoria, m.cantidad, m.tipo, m.descripcion, m.fecha,
-                   p.id_producto, p.nombre,
-                   c.id_categoria, c.nombre as categoria_nombre
+            SELECT m.id_movimiento, m.id_producto, m.cantidad, m.tipo, m.descripcion, m.fecha,
+                   p.id_producto, p.nombre
             FROM movimiento m
             LEFT JOIN producto p ON m.id_producto = p.id_producto
-            LEFT JOIN categoria c ON m.id_categoria = c.id_categoria
             ORDER BY m.fecha DESC
             """;
 
@@ -92,14 +87,6 @@ public class MovementCommand {
             product.setId(productId);
             product.setName(resultSet.getString("nombre"));
             movement.setProduct(product);
-        }
-
-        int categoryId = resultSet.getInt("id_categoria");
-        if (!resultSet.wasNull()) {
-            Category category = new Category();
-            category.setId(categoryId);
-            category.setName(resultSet.getString("categoria_nombre"));
-            movement.setCategory(category);
         }
 
         int quantity = resultSet.getInt("cantidad");

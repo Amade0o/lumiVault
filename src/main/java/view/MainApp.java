@@ -273,7 +273,6 @@ public class MainApp extends Application {
      */
     private void updateInventoryChart() {
         try {
-            List<Category> categories = controller.getAllCategories();
             List<Product> products = controller.getAllProducts();
             
             Map<String, Integer> categoryCount = new HashMap<>();
@@ -622,6 +621,14 @@ public class MainApp extends Application {
             dialog.close();
         });
         
+        Button removeCatBtn = new Button("🗑️ Eliminar Categoría");
+        removeCatBtn.setMaxWidth(Double.MAX_VALUE);
+        removeCatBtn.setStyle("-fx-background-color: #d32f2f; -fx-text-fill: white;");
+        removeCatBtn.setOnAction(e -> {
+            removeCategory();
+            dialog.close();
+        });
+        
         Button listCatBtn = new Button("📋 Listar Todas las Categorías");
         listCatBtn.setMaxWidth(Double.MAX_VALUE);
         listCatBtn.setOnAction(e -> {
@@ -629,7 +636,7 @@ public class MainApp extends Application {
             dialog.close();
         });
         
-        content.getChildren().addAll(addCatBtn, listCatBtn);
+        content.getChildren().addAll(addCatBtn, removeCatBtn, listCatBtn);
         
         dialog.getDialogPane().setContent(content);
         dialog.getDialogPane().getButtonTypes().add(ButtonType.CLOSE);
@@ -658,6 +665,14 @@ public class MainApp extends Application {
             dialog.close();
         });
         
+        Button removeProdBtn = new Button("🗑️ Eliminar Producto");
+        removeProdBtn.setMaxWidth(Double.MAX_VALUE);
+        removeProdBtn.setStyle("-fx-background-color: #d32f2f; -fx-text-fill: white;");
+        removeProdBtn.setOnAction(e -> {
+            removeProduct();
+            dialog.close();
+        });
+        
         Button listProdBtn = new Button("📋 Listar Todos los Productos");
         listProdBtn.setMaxWidth(Double.MAX_VALUE);
         listProdBtn.setOnAction(e -> {
@@ -665,7 +680,7 @@ public class MainApp extends Application {
             dialog.close();
         });
         
-        content.getChildren().addAll(addProdBtn, updatePriceBtn, listProdBtn);
+        content.getChildren().addAll(addProdBtn, updatePriceBtn, removeProdBtn, listProdBtn);
         
         dialog.getDialogPane().setContent(content);
         dialog.getDialogPane().getButtonTypes().add(ButtonType.CLOSE);
@@ -1189,6 +1204,70 @@ public class MainApp extends Application {
                 });
             } else {
                 showError("Error", "ID de producto no puede estar vacío");
+            }
+        });
+    }
+
+    private void removeProduct() {
+        TextInputDialog dialog = new TextInputDialog();
+        dialog.setTitle("Eliminar Producto");
+        dialog.setHeaderText("Eliminar Producto del Inventario");
+        dialog.setContentText("ID del producto (código de barras):");
+
+        dialog.showAndWait().ifPresent(productId -> {
+            if (!productId.trim().isEmpty()) {
+                // Confirmation dialog
+                Alert confirmAlert = new Alert(Alert.AlertType.CONFIRMATION);
+                confirmAlert.setTitle("Confirmar Eliminación");
+                confirmAlert.setHeaderText("¿Está seguro que desea eliminar este producto?");
+                confirmAlert.setContentText("ID: " + productId.trim() + "\n\nEsta acción no se puede deshacer.");
+
+                confirmAlert.showAndWait().ifPresent(response -> {
+                    if (response == ButtonType.OK) {
+                        try {
+                            controller.executeCommand(CommandType.REMOVE_PRODUCT, productId.trim());
+                            appendOutput("✓ Producto eliminado: " + productId.trim());
+                            updateAllCharts();
+                        } catch (SQLException e) {
+                            showError("Error", "No se pudo eliminar el producto: " + e.getMessage());
+                        }
+                    }
+                });
+            } else {
+                showError("Error", "ID del producto no puede estar vacío.");
+            }
+        });
+    }
+
+    private void removeCategory() {
+        TextInputDialog dialog = new TextInputDialog();
+        dialog.setTitle("Eliminar Categoría");
+        dialog.setHeaderText("Eliminar Categoría del Inventario");
+        dialog.setContentText("ID de la categoría:");
+
+        dialog.showAndWait().ifPresent(idStr -> {
+            try {
+                int categoryId = Integer.parseInt(idStr.trim());
+                
+                // Confirmation dialog
+                Alert confirmAlert = new Alert(Alert.AlertType.CONFIRMATION);
+                confirmAlert.setTitle("Confirmar Eliminación");
+                confirmAlert.setHeaderText("¿Está seguro que desea eliminar esta categoría?");
+                confirmAlert.setContentText("ID: " + categoryId + "\n\nLos productos de esta categoría quedarán sin categoría.\nEsta acción no se puede deshacer.");
+
+                confirmAlert.showAndWait().ifPresent(response -> {
+                    if (response == ButtonType.OK) {
+                        try {
+                            controller.executeCommand(CommandType.REMOVE_CATEGORY, categoryId);
+                            appendOutput("✓ Categoría eliminada: " + categoryId);
+                            updateAllCharts();
+                        } catch (SQLException e) {
+                            showError("Error", "No se pudo eliminar la categoría: " + e.getMessage());
+                        }
+                    }
+                });
+            } catch (NumberFormatException e) {
+                showError("Error", "ID de categoría debe ser un número válido.");
             }
         });
     }

@@ -36,41 +36,23 @@ public class RemoveCategoryCommand implements Command {
     private void deleteCategory() throws SQLException {
         Connection connection = DatabaseConnection.getInstance().getConnection();
         
-        boolean isSQLite = connection.getMetaData().getDriverName().toLowerCase().contains("sqlite");
-        
-        if (isSQLite) {
-            try (PreparedStatement pragmaStatement = connection.prepareStatement("PRAGMA foreign_keys = OFF")) {
-                pragmaStatement.execute();
-            }
-        }
-        
-        String deleteMovementsSql = "DELETE FROM movimiento WHERE id_categoria = ?";
-        try (PreparedStatement deleteMovementsStatement = connection.prepareStatement(deleteMovementsSql)) {
-            deleteMovementsStatement.setInt(1, categoryId);
-            deleteMovementsStatement.executeUpdate();
-        }
-        
+        // Update products to remove category reference
         String updateProductsCategorySql = """
             UPDATE producto SET id_categoria = NULL WHERE id_categoria = ?
             """;
-        
-        String deleteCategorySql = "DELETE FROM categoria WHERE id_categoria = ?";
         
         try (PreparedStatement updateStatement = connection.prepareStatement(updateProductsCategorySql)) {
             updateStatement.setInt(1, categoryId);
             updateStatement.executeUpdate();
         }
         
+        // Delete the category
+        String deleteCategorySql = "DELETE FROM categoria WHERE id_categoria = ?";
+        
         int affectedRows;
         try (PreparedStatement deleteStatement = connection.prepareStatement(deleteCategorySql)) {
             deleteStatement.setInt(1, categoryId);
             affectedRows = deleteStatement.executeUpdate();
-        }
-        
-        if (isSQLite) {
-            try (PreparedStatement pragmaStatement = connection.prepareStatement("PRAGMA foreign_keys = ON")) {
-                pragmaStatement.execute();
-            }
         }
         
         if (affectedRows == 0) {
