@@ -61,7 +61,7 @@ Desktop.ini
 data/*.db
 data/*.sqlite
 data/*.sql
-
+data/
 # Compiled class files
 *.class
 
