@@ -1,10 +1,15 @@
 package database;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 /**
  * Singleton class for managing SQLite database connection.
@@ -14,6 +19,8 @@ public class DatabaseConnection {
     
     private static final String DATABASE_FILE_NAME = "lumivault.db";
     private static final String DATA_FOLDER_NAME = "data";
+    private static final String BACKUPS_FOLDER_NAME = "backups";
+    private static final int MAX_BACKUPS = 20;
     
     private static DatabaseConnection instance;
     private Connection connection;
@@ -49,6 +56,7 @@ public class DatabaseConnection {
             connection = DriverManager.getConnection(connectionUrl);
             System.out.println("✓ Connected to SQLite: " + databasePath);
             
+            createAutomaticBackup(databasePath);
             createTablesIfNotExist();
         }
         return connection;
@@ -166,5 +174,63 @@ public class DatabaseConnection {
      */
     public static void clearTestConnection() {
         testConnection = null;
+    }
+    
+    /**
+     * Creates an automatic backup of the database with timestamp.
+     * Backups are stored in data/backups/ folder.
+     */
+    private void createAutomaticBackup(String databasePath) {
+        File dbFile = new File(databasePath);
+        
+        // Solo hacer backup si el archivo existe y tiene contenido
+        if (!dbFile.exists() || dbFile.length() == 0) {
+            return;
+        }
+        
+        try {
+            String applicationDirectory = System.getProperty("user.dir");
+            File backupsDirectory = new File(applicationDirectory, DATA_FOLDER_NAME + File.separator + BACKUPS_FOLDER_NAME);
+            
+            if (!backupsDirectory.exists()) {
+                backupsDirectory.mkdirs();
+            }
+            
+            // Crear nombre con fecha: lumivault_2026-01-27_14-30-45.db
+            String timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm-ss"));
+            String backupFileName = "lumivault_" + timestamp + ".db";
+            File backupFile = new File(backupsDirectory, backupFileName);
+            
+            Files.copy(dbFile.toPath(), backupFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+            System.out.println("✓ Backup created: " + backupFileName);
+            
+            // Limpiar backups viejos
+            cleanOldBackups(backupsDirectory);
+            
+        } catch (IOException e) {
+            System.err.println("⚠ Warning: Could not create backup - " + e.getMessage());
+        }
+    }
+    
+    /**
+     * Keeps only the most recent MAX_BACKUPS files and deletes older ones.
+     */
+    private void cleanOldBackups(File backupsDirectory) {
+        File[] backupFiles = backupsDirectory.listFiles((dir, name) -> name.startsWith("lumivault_") && name.endsWith(".db"));
+        
+        if (backupFiles == null || backupFiles.length <= MAX_BACKUPS) {
+            return;
+        }
+        
+        // Ordenar por fecha de modificación (más antiguos primero)
+        java.util.Arrays.sort(backupFiles, (f1, f2) -> Long.compare(f1.lastModified(), f2.lastModified()));
+        
+        // Eliminar los más viejos
+        int toDelete = backupFiles.length - MAX_BACKUPS;
+        for (int i = 0; i < toDelete; i++) {
+            if (backupFiles[i].delete()) {
+                System.out.println("✓ Old backup deleted: " + backupFiles[i].getName());
+            }
+        }
     }
 }
