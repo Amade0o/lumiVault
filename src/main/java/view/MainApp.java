@@ -1125,87 +1125,79 @@ public class MainApp extends Application {
     }
 
     private void addStock() {
-        // Simple stock addition for existing products
-        TextInputDialog productIdDialog = new TextInputDialog();
-        productIdDialog.setTitle("Agregar Stock");
-        productIdDialog.setHeaderText("Agregar Stock a Producto");
-        productIdDialog.setContentText("ID del producto (código de barras):");
+        String productId = getProductIdWithNameSearch(
+            "Agregar Stock",
+            "Agregar Stock a Producto",
+            "ID del producto (código de barras):"
+        );
+        
+        if (productId != null && !productId.trim().isEmpty()) {
+            TextInputDialog quantityDialog = new TextInputDialog("1");
+            quantityDialog.setTitle("Agregar Stock");
+            quantityDialog.setHeaderText("Cantidad a agregar");
+            quantityDialog.setContentText("Cantidad:");
 
-        productIdDialog.showAndWait().ifPresent(productId -> {
-            if (!productId.trim().isEmpty()) {
-                TextInputDialog quantityDialog = new TextInputDialog("1");
-                quantityDialog.setTitle("Agregar Stock");
-                quantityDialog.setHeaderText("Cantidad a agregar");
-                quantityDialog.setContentText("Cantidad:");
+            quantityDialog.showAndWait().ifPresent(quantityStr -> {
+                try {
+                    int quantity = Integer.parseInt(quantityStr.trim());
+                    Product product = new Product();
+                    product.setId(productId.trim());
 
-                quantityDialog.showAndWait().ifPresent(quantityStr -> {
-                    try {
-                        int quantity = Integer.parseInt(quantityStr.trim());
-                        Product product = new Product();
-                        product.setId(productId.trim());
+                    Movement movement = new Movement();
+                    movement.setProduct(product);
+                    movement.setQuantity(quantity);
+                    movement.setType(Movement.MovementType.STOCK_ENTRY);
+                    movement.setDescription("Entrada de stock desde interfaz");
+                    movement.setDateTime(null); // Will use current time
 
-                        Movement movement = new Movement();
-                        movement.setProduct(product);
-                        movement.setQuantity(quantity);
-                        movement.setType(Movement.MovementType.STOCK_ENTRY);
-                        movement.setDescription("Entrada de stock desde interfaz");
-                        movement.setDateTime(null); // Will use current time
-
-                        controller.executeCommand(CommandType.ADD_STOCK, movement);
-                        appendOutput("✓ Stock agregado: " + quantity + " unidades al producto ID " + productId);
-                        updateAllCharts();
-                    } catch (NumberFormatException ex) {
-                        showError("Error", "Cantidad inválida");
-                    } catch (SQLException ex) {
-                        showError("Error", "No se pudo agregar stock: " + ex.getMessage());
-                    }
-                });
-            } else {
-                showError("Error", "ID de producto no puede estar vacío");
-            }
-        });
+                    controller.executeCommand(CommandType.ADD_STOCK, movement);
+                    appendOutput("✓ Stock agregado: " + quantity + " unidades al producto ID " + productId);
+                    updateAllCharts();
+                } catch (NumberFormatException ex) {
+                    showError("Error", "Cantidad inválida");
+                } catch (SQLException ex) {
+                    showError("Error", "No se pudo agregar stock: " + ex.getMessage());
+                }
+            });
+        }
     }
 
     private void removeStock() {
-        // Simple stock removal for existing products
-        TextInputDialog productIdDialog = new TextInputDialog();
-        productIdDialog.setTitle("Quitar Stock");
-        productIdDialog.setHeaderText("Quitar Stock de Producto");
-        productIdDialog.setContentText("ID del producto (código de barras):");
+        String productId = getProductIdWithNameSearch(
+            "Quitar Stock",
+            "Quitar Stock de Producto",
+            "ID del producto (código de barras):"
+        );
+        
+        if (productId != null && !productId.trim().isEmpty()) {
+            TextInputDialog quantityDialog = new TextInputDialog("1");
+            quantityDialog.setTitle("Quitar Stock");
+            quantityDialog.setHeaderText("Cantidad a quitar");
+            quantityDialog.setContentText("Cantidad:");
 
-        productIdDialog.showAndWait().ifPresent(productId -> {
-            if (!productId.trim().isEmpty()) {
-                TextInputDialog quantityDialog = new TextInputDialog("1");
-                quantityDialog.setTitle("Quitar Stock");
-                quantityDialog.setHeaderText("Cantidad a quitar");
-                quantityDialog.setContentText("Cantidad:");
+            quantityDialog.showAndWait().ifPresent(quantityStr -> {
+                try {
+                    int quantity = Integer.parseInt(quantityStr.trim());
+                    Product product = new Product();
+                    product.setId(productId.trim());
 
-                quantityDialog.showAndWait().ifPresent(quantityStr -> {
-                    try {
-                        int quantity = Integer.parseInt(quantityStr.trim());
-                        Product product = new Product();
-                        product.setId(productId.trim());
+                    Movement movement = new Movement();
+                    movement.setProduct(product);
+                    movement.setQuantity(quantity);
+                    movement.setType(Movement.MovementType.STOCK_EXIT);
+                    movement.setDescription("Salida de stock desde interfaz");
+                    movement.setDateTime(null); // Will use current time
 
-                        Movement movement = new Movement();
-                        movement.setProduct(product);
-                        movement.setQuantity(quantity);
-                        movement.setType(Movement.MovementType.STOCK_EXIT);
-                        movement.setDescription("Salida de stock desde interfaz");
-                        movement.setDateTime(null); // Will use current time
-
-                        controller.executeCommand(CommandType.REMOVE_STOCK, movement);
-                        appendOutput("✓ Stock quitado: " + quantity + " unidades del producto ID " + productId);
-                        updateAllCharts();
-                    } catch (NumberFormatException ex) {
-                        showError("Error", "Cantidad inválida");
-                    } catch (SQLException ex) {
-                        showError("Error", "No se pudo quitar stock: " + ex.getMessage());
-                    }
-                });
-            } else {
-                showError("Error", "ID de producto no puede estar vacío");
-            }
-        });
+                    controller.executeCommand(CommandType.REMOVE_STOCK, movement);
+                    appendOutput("✓ Stock quitado: " + quantity + " unidades del producto ID " + productId);
+                    updateAllCharts();
+                } catch (NumberFormatException ex) {
+                    showError("Error", "Cantidad inválida");
+                } catch (SQLException ex) {
+                    showError("Error", "No se pudo quitar stock: " + ex.getMessage());
+                }
+            });
+        }
     }
 
     private void removeProduct() {
@@ -1237,36 +1229,110 @@ public class MainApp extends Application {
     }
 
     private void removeCategory() {
-        TextInputDialog dialog = new TextInputDialog();
-        dialog.setTitle("Eliminar Categoría");
-        dialog.setHeaderText("Eliminar Categoría del Inventario");
-        dialog.setContentText("ID de la categoría:");
-
-        dialog.showAndWait().ifPresent(idStr -> {
-            try {
-                int categoryId = Integer.parseInt(idStr.trim());
+        try {
+            // Get all categories
+            List<Category> allCategories = controller.getAllCategories();
+            if (allCategories.isEmpty()) {
+                showInfo("Sin Categorías", "No hay categorías registradas en el sistema.");
+                return;
+            }
+            
+            // Create selection dialog
+            Dialog<Category> dialog = new Dialog<>();
+            dialog.setTitle("Eliminar Categoría");
+            dialog.setHeaderText("Selecciona la categoría a eliminar");
+            
+            VBox content = new VBox(10);
+            content.setPadding(new Insets(20));
+            
+            // TableView for categories
+            TableView<Category> table = new TableView<>();
+            table.setPrefHeight(300);
+            table.setPrefWidth(500);
+            
+            // Define columns
+            TableColumn<Category, Integer> idCol = new TableColumn<>("ID");
+            idCol.setCellValueFactory(cellData -> 
+                new javafx.beans.property.SimpleIntegerProperty(cellData.getValue().getId()).asObject());
+            idCol.setPrefWidth(80);
+            
+            TableColumn<Category, String> nameCol = new TableColumn<>("Nombre");
+            nameCol.setCellValueFactory(cellData -> 
+                new javafx.beans.property.SimpleStringProperty(cellData.getValue().getName()));
+            nameCol.setPrefWidth(420);
+            
+            table.getColumns().addAll(idCol, nameCol);
+            table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+            
+            // Set items
+            javafx.collections.ObservableList<Category> categories = 
+                javafx.collections.FXCollections.observableArrayList(allCategories);
+            table.setItems(categories);
+            
+            Label infoLabel = new Label("⚠️ Los productos de esta categoría quedarán sin categoría");
+            infoLabel.setStyle("-fx-font-size: 11px; -fx-text-fill: #d32f2f; -fx-font-weight: bold;");
+            
+            Label countLabel = new Label("Total: " + allCategories.size() + " categorías");
+            countLabel.setStyle("-fx-font-size: 11px; -fx-text-fill: #666;");
+            
+            content.getChildren().addAll(
+                new Label("Selecciona una categoría:"),
+                table,
+                infoLabel,
+                countLabel
+            );
+            
+            dialog.getDialogPane().setContent(content);
+            
+            // Add buttons
+            ButtonType deleteButtonType = new ButtonType("Eliminar", javafx.scene.control.ButtonBar.ButtonData.OK_DONE);
+            dialog.getDialogPane().getButtonTypes().addAll(deleteButtonType, ButtonType.CANCEL);
+            
+            // Enable/disable delete button based on selection
+            javafx.scene.Node deleteButton = dialog.getDialogPane().lookupButton(deleteButtonType);
+            deleteButton.setDisable(true);
+            
+            table.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
+                deleteButton.setDisable(newSelection == null);
+            });
+            
+            // Result converter
+            dialog.setResultConverter(dialogButton -> {
+                if (dialogButton == deleteButtonType) {
+                    return table.getSelectionModel().getSelectedItem();
+                }
+                return null;
+            });
+            
+            // Show and get result
+            java.util.Optional<Category> result = dialog.showAndWait();
+            if (result.isPresent()) {
+                Category selectedCategory = result.get();
                 
                 // Confirmation dialog
                 Alert confirmAlert = new Alert(Alert.AlertType.CONFIRMATION);
                 confirmAlert.setTitle("Confirmar Eliminación");
                 confirmAlert.setHeaderText("¿Está seguro que desea eliminar esta categoría?");
-                confirmAlert.setContentText("ID: " + categoryId + "\n\nLos productos de esta categoría quedarán sin categoría.\nEsta acción no se puede deshacer.");
+                confirmAlert.setContentText("Categoría: " + selectedCategory.getName() + 
+                                          " (ID: " + selectedCategory.getId() + ")" +
+                                          "\n\nLos productos de esta categoría quedarán sin categoría.\nEsta acción no se puede deshacer.");
 
                 confirmAlert.showAndWait().ifPresent(response -> {
                     if (response == ButtonType.OK) {
                         try {
-                            controller.executeCommand(CommandType.REMOVE_CATEGORY, categoryId);
-                            appendOutput("✓ Categoría eliminada: " + categoryId);
+                            controller.executeCommand(CommandType.REMOVE_CATEGORY, selectedCategory.getId());
+                            appendOutput("✓ Categoría eliminada: " + selectedCategory.getName());
                             updateAllCharts();
                         } catch (SQLException e) {
                             showError("Error", "No se pudo eliminar la categoría: " + e.getMessage());
                         }
                     }
                 });
-            } catch (NumberFormatException e) {
-                showError("Error", "ID de categoría debe ser un número válido.");
             }
-        });
+            
+        } catch (SQLException e) {
+            showError("Error", "Error al obtener categorías: " + e.getMessage());
+        }
     }
 
     private void appendOutput(String text) {
