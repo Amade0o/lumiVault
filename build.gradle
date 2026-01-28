@@ -3,7 +3,6 @@ plugins {
     id 'application'
     id 'com.github.johnrengelman.shadow' version '8.1.1'
     id 'org.openjfx.javafxplugin' version '0.1.0'
-    // 1. Agregamos el plugin para crear el .exe
     id 'edu.sc.seis.launch4j' version '3.0.6' 
 }
 
@@ -27,15 +26,14 @@ javafx {
 }
 
 dependencies {
-    // 2. TRUCO PARA WINDOWS: Forzamos la descarga de binarios de Windows
-    // aunque estemos en Linux. Esto es vital para JavaFX.
+    // SQLite
+    implementation 'org.xerial:sqlite-jdbc:3.45.1.0'
+    
+    // JavaFX para Windows (clasificador 'win')
     implementation "org.openjfx:javafx-base:21.0.2:win"
     implementation "org.openjfx:javafx-graphics:21.0.2:win"
     implementation "org.openjfx:javafx-controls:21.0.2:win"
     implementation "org.openjfx:javafx-fxml:21.0.2:win"
-
-    // Tus otras dependencias...
-    implementation 'org.xerial:sqlite-jdbc:3.45.1.0'
     
     testImplementation 'org.junit.jupiter:junit-jupiter:5.10.2'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
@@ -47,28 +45,46 @@ dependencies {
     testImplementation 'com.h2database:h2:2.2.224'
 }
 
-// 3. Configuración del Ejecutable (.exe)
+// Configuración Launch4j para crear el .exe
 launch4j {
     mainClassName = 'view.Main'
-    outfile = 'LumiVault.exe' // Nombre del ejecutable
-    
-    // IMPORTANTE: Aquí le decimos que busque una carpeta llamada "jre" al lado del exe
-    bundledJrePath = './jre' 
+    outfile = 'LumiVault.exe'
+    bundledJrePath = 'jre'
     jreMinVersion = '21'
-    
-    // Como usas JavaFX, no queremos consola negra de fondo
-    headerType = 'gui' 
-    
-    // Le indicamos qué JAR usar (usaremos el Fat Jar de Shadow)
+    headerType = 'gui'
+    dontWrapJar = true
     jarTask = tasks.shadowJar
 }
 
+// Fat JAR con todas las dependencias incluidas
 tasks.named('shadowJar') {
     archiveBaseName.set('lumiVault')
-    archiveVersion.set('') // Deja el nombre limpio: lumiVault.jar
+    archiveClassifier.set('')
+    archiveVersion.set('')
+    
     manifest {
         attributes 'Main-Class': 'view.Main'
     }
+    
+    // Incluir dependencias de JavaFX para Windows
+    configurations = [project.configurations.runtimeClasspath]
+}
+
+// Resolver dependencias entre tareas
+tasks.named('distZip') {
+    dependsOn tasks.shadowJar
+}
+
+tasks.named('distTar') {
+    dependsOn tasks.shadowJar
+}
+
+tasks.named('startScripts') {
+    dependsOn tasks.shadowJar
+}
+
+tasks.named('startShadowScripts') {
+    dependsOn tasks.jar
 }
 
 tasks.named('test') {

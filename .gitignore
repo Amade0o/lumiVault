@@ -77,3 +77,9 @@ data/
 # JVM crash logs
 hs_err_pid*
 replay_pid*
+
+# Distribución Windows (archivos grandes - no subir a Git)
+dist/
+jre-temp.zip
+*.exe
+!gradle/wrapper/*.jar
