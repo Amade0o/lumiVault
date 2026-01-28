@@ -132,7 +132,7 @@ public class DatabaseConnection {
         String createProductTableSql = """
             CREATE TABLE IF NOT EXISTS producto (
                 id_producto TEXT PRIMARY KEY,
-                nombre TEXT NOT NULL,
+                nombre TEXT NOT NULL UNIQUE,
                 precio_costo REAL NOT NULL DEFAULT 0,
                 precio_venta REAL NOT NULL DEFAULT 0,
                 cantidad_stock INTEGER NOT NULL DEFAULT 0,

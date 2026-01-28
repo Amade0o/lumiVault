@@ -93,6 +93,21 @@ class CommandValidationTest {
     }
 
     @Test
+    @DisplayName("Should reject duplicate product name")
+    void shouldRejectDuplicateProductName() throws SQLException {
+        Product product1 = ProductFactory.createProduct("Laptop", 500.0, 700.0, 5, null);
+        product1.setId("PROD001");
+        controller.executeCommand(CommandType.ADD_PRODUCT, product1);
+
+        Product product2 = ProductFactory.createProduct("Laptop", 600.0, 800.0, 10, null);
+        product2.setId("PROD002"); // Different ID, same name
+        
+        assertThatThrownBy(() -> controller.executeCommand(CommandType.ADD_PRODUCT, product2))
+            .isInstanceOf(SQLException.class)
+            .hasMessageContaining("already exists");
+    }
+
+    @Test
     @DisplayName("Should accept product with minimum valid values")
     void shouldAcceptProductWithMinimumValues() throws SQLException {
         Product product = ProductFactory.createProduct("A", 0.01, 0.01, 0, null);

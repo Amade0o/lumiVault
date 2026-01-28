@@ -908,7 +908,10 @@ public class MainApp extends Application {
                                                                 " (ID: " + productId.trim() + ", Categoría: " + category.getName() + ")");
                                                             updateAllCharts();
                                                         } catch (SQLException e) {
-                                                            showError("Error", "No se pudo crear el producto: " + e.getMessage());
+                                                            String errorMsg = e.getMessage().contains("already exists")
+                                                                ? "Ya existe un producto con el nombre '" + name.trim() + "' o el ID '" + productId.trim() + "'"
+                                                                : "No se pudo crear el producto: " + e.getMessage();
+                                                            showError("Error", errorMsg);
                                                         }
                                                     });
 

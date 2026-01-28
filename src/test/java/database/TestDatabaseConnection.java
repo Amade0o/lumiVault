@@ -43,7 +43,7 @@ public class TestDatabaseConnection {
             stmt.execute("""
                 CREATE TABLE IF NOT EXISTS producto (
                     id_producto VARCHAR(13) PRIMARY KEY,
-                    nombre TEXT NOT NULL,
+                    nombre TEXT NOT NULL UNIQUE,
                     precio_costo DECIMAL(10,2) NOT NULL DEFAULT 0.00,
                     precio_venta DECIMAL(10,2) NOT NULL DEFAULT 0.00,
                     cantidad_stock INTEGER NOT NULL DEFAULT 0,

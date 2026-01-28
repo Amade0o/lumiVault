@@ -94,5 +94,28 @@ public class AddCategoryCommand implements Command {
         if (categoryToAdd.getName() == null || categoryToAdd.getName().trim().isEmpty()) {
             throw new SQLException("Category name cannot be null or empty");
         }
+        
+        // Validate unique category name
+        if (categoryNameExists(categoryToAdd.getName())) {
+            throw new SQLException("Category name '" + categoryToAdd.getName() + "' already exists");
+        }
+    }
+    
+    /**
+     * Checks if a category name already exists in the database.
+     */
+    private boolean categoryNameExists(String categoryName) throws SQLException {
+        String checkNameSql = "SELECT COUNT(*) FROM categoria WHERE nombre = ?";
+        Connection connection = DatabaseConnection.getInstance().getConnection();
+        
+        try (PreparedStatement statement = connection.prepareStatement(checkNameSql)) {
+            statement.setString(1, categoryName);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next()) {
+                    return resultSet.getInt(1) > 0;
+                }
+            }
+        }
+        return false;
     }
 }

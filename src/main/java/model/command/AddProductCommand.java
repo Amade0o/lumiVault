@@ -142,5 +142,28 @@ public class AddProductCommand implements Command {
         if (productToAdd.getStockQuantity() < 0) {
             throw new SQLException("Stock quantity cannot be negative");
         }
+        
+        // Validate unique product name
+        if (productNameExists(productToAdd.getName())) {
+            throw new SQLException("Product name '" + productToAdd.getName() + "' already exists");
+        }
+    }
+    
+    /**
+     * Checks if a product name already exists in the database.
+     */
+    private boolean productNameExists(String productName) throws SQLException {
+        String checkNameSql = "SELECT COUNT(*) FROM producto WHERE nombre = ?";
+        Connection connection = DatabaseConnection.getInstance().getConnection();
+        
+        try (PreparedStatement statement = connection.prepareStatement(checkNameSql)) {
+            statement.setString(1, productName);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next()) {
+                    return resultSet.getInt(1) > 0;
+                }
+            }
+        }
+        return false;
     }
 }
