@@ -722,12 +722,13 @@ public class MainApp extends Application {
     }
     
     private void showSearch() {
-        TextInputDialog dialog = new TextInputDialog();
-        dialog.setTitle("Buscar Producto por ID");
-        dialog.setHeaderText("Búsqueda de Producto por ID");
-        dialog.setContentText("ID del producto:");
-
-        dialog.showAndWait().ifPresent(idStr -> {
+        String idStr = getProductIdWithNameSearch(
+            "Buscar Producto",
+            "Búsqueda de Producto",
+            "ID del producto:"
+        );
+        
+        if (idStr != null && !idStr.trim().isEmpty()) {
             try {
                 String id = idStr.trim();
                 List<Product> allProducts = controller.getAllProducts();
@@ -797,7 +798,7 @@ public class MainApp extends Application {
             } catch (SQLException e) {
                 showError("Error", "Error en la búsqueda: " + e.getMessage());
             }
-        });
+        }
     }
     
     private void showSettings() {
@@ -1071,60 +1072,56 @@ public class MainApp extends Application {
     }
 
     private void updatePrice() {
-        // Dialog for product ID
-        TextInputDialog idDialog = new TextInputDialog();
-        idDialog.setTitle("Actualizar Precio");
-        idDialog.setHeaderText("Actualizar Precio de Producto");
-        idDialog.setContentText("ID del producto (código de barras):");
+        String productId = getProductIdWithNameSearch(
+            "Actualizar Precio",
+            "Actualizar Precio de Producto",
+            "ID del producto (código de barras):"
+        );
+        
+        if (productId != null && !productId.trim().isEmpty()) {
+            // Dialog for new cost price
+            TextInputDialog costDialog = new TextInputDialog();
+            costDialog.setTitle("Precio de Costo");
+            costDialog.setHeaderText("Nuevo Precio de Costo");
+            costDialog.setContentText("Nuevo precio de costo:");
 
-        idDialog.showAndWait().ifPresent(productId -> {
-            if (!productId.trim().isEmpty()) {
-                // Dialog for new cost price
-                TextInputDialog costDialog = new TextInputDialog();
-                costDialog.setTitle("Precio de Costo");
-                costDialog.setHeaderText("Nuevo Precio de Costo");
-                costDialog.setContentText("Nuevo precio de costo:");
+            costDialog.showAndWait().ifPresent(costStr -> {
+                try {
+                    double newCostPrice = Double.parseDouble(costStr.trim());
 
-                costDialog.showAndWait().ifPresent(costStr -> {
-                    try {
-                        double newCostPrice = Double.parseDouble(costStr.trim());
+                    // Dialog for new sale price
+                    TextInputDialog saleDialog = new TextInputDialog();
+                    saleDialog.setTitle("Precio de Venta");
+                    saleDialog.setHeaderText("Nuevo Precio de Venta");
+                    saleDialog.setContentText("Nuevo precio de venta:");
 
-                        // Dialog for new sale price
-                        TextInputDialog saleDialog = new TextInputDialog();
-                        saleDialog.setTitle("Precio de Venta");
-                        saleDialog.setHeaderText("Nuevo Precio de Venta");
-                        saleDialog.setContentText("Nuevo precio de venta:");
+                    saleDialog.showAndWait().ifPresent(saleStr -> {
+                        try {
+                            double newSalePrice = Double.parseDouble(saleStr.trim());
 
-                        saleDialog.showAndWait().ifPresent(saleStr -> {
-                            try {
-                                double newSalePrice = Double.parseDouble(saleStr.trim());
+                            // Create product object with ID
+                            Product product = new Product();
+                            product.setId(productId.trim());
 
-                                // Create product object with ID
-                                Product product = new Product();
-                                product.setId(productId.trim());
+                            // Execute update price command
+                            Object[] priceData = {product, newCostPrice, newSalePrice};
+                            controller.executeCommand(CommandType.UPDATE_PRICE, priceData);
+                            
+                            appendOutput(String.format("✓ Precios actualizados para producto ID %s: Costo=$%.2f, Venta=$%.2f",
+                                productId.trim(), newCostPrice, newSalePrice));
+                            updateAllCharts();
+                        } catch (NumberFormatException e) {
+                            showError("Error", "Precio de venta debe ser un número válido.");
+                        } catch (SQLException e) {
+                            showError("Error", "No se pudo actualizar el precio: " + e.getMessage());
+                        }
+                    });
 
-                                // Execute update price command
-                                Object[] priceData = {product, newCostPrice, newSalePrice};
-                                controller.executeCommand(CommandType.UPDATE_PRICE, priceData);
-                                
-                                appendOutput(String.format("✓ Precios actualizados para producto ID %s: Costo=$%.2f, Venta=$%.2f",
-                                    productId.trim(), newCostPrice, newSalePrice));
-                                updateAllCharts();
-                            } catch (NumberFormatException e) {
-                                showError("Error", "Precio de venta debe ser un número válido.");
-                            } catch (SQLException e) {
-                                showError("Error", "No se pudo actualizar el precio: " + e.getMessage());
-                            }
-                        });
-
-                    } catch (NumberFormatException e) {
-                        showError("Error", "Precio de costo debe ser un número válido.");
-                    }
-                });
-            } else {
-                showError("Error", "ID del producto no puede estar vacío.");
-            }
-        });
+                } catch (NumberFormatException e) {
+                    showError("Error", "Precio de costo debe ser un número válido.");
+                }
+            });
+        }
     }
 
     private void addStock() {
@@ -1212,34 +1209,31 @@ public class MainApp extends Application {
     }
 
     private void removeProduct() {
-        TextInputDialog dialog = new TextInputDialog();
-        dialog.setTitle("Eliminar Producto");
-        dialog.setHeaderText("Eliminar Producto del Inventario");
-        dialog.setContentText("ID del producto (código de barras):");
+        String productId = getProductIdWithNameSearch(
+            "Eliminar Producto",
+            "Eliminar Producto del Inventario",
+            "ID del producto (código de barras):"
+        );
+        
+        if (productId != null && !productId.trim().isEmpty()) {
+            // Confirmation dialog
+            Alert confirmAlert = new Alert(Alert.AlertType.CONFIRMATION);
+            confirmAlert.setTitle("Confirmar Eliminación");
+            confirmAlert.setHeaderText("¿Está seguro que desea eliminar este producto?");
+            confirmAlert.setContentText("ID: " + productId.trim() + "\n\nEsta acción no se puede deshacer.");
 
-        dialog.showAndWait().ifPresent(productId -> {
-            if (!productId.trim().isEmpty()) {
-                // Confirmation dialog
-                Alert confirmAlert = new Alert(Alert.AlertType.CONFIRMATION);
-                confirmAlert.setTitle("Confirmar Eliminación");
-                confirmAlert.setHeaderText("¿Está seguro que desea eliminar este producto?");
-                confirmAlert.setContentText("ID: " + productId.trim() + "\n\nEsta acción no se puede deshacer.");
-
-                confirmAlert.showAndWait().ifPresent(response -> {
-                    if (response == ButtonType.OK) {
-                        try {
-                            controller.executeCommand(CommandType.REMOVE_PRODUCT, productId.trim());
-                            appendOutput("✓ Producto eliminado: " + productId.trim());
-                            updateAllCharts();
-                        } catch (SQLException e) {
-                            showError("Error", "No se pudo eliminar el producto: " + e.getMessage());
-                        }
+            confirmAlert.showAndWait().ifPresent(response -> {
+                if (response == ButtonType.OK) {
+                    try {
+                        controller.executeCommand(CommandType.REMOVE_PRODUCT, productId.trim());
+                        appendOutput("✓ Producto eliminado: " + productId.trim());
+                        updateAllCharts();
+                    } catch (SQLException e) {
+                        showError("Error", "No se pudo eliminar el producto: " + e.getMessage());
                     }
-                });
-            } else {
-                showError("Error", "ID del producto no puede estar vacío.");
-            }
-        });
+                }
+            });
+        }
     }
 
     private void removeCategory() {
@@ -1293,5 +1287,194 @@ public class MainApp extends Application {
         alert.setHeaderText(null);
         alert.setContentText(message);
         alert.showAndWait();
+    }
+    
+    /**
+     * Shows a custom dialog to get product ID with option to search by name.
+     * Returns the selected product ID or null if cancelled.
+     */
+    private String getProductIdWithNameSearch(String title, String header, String message) {
+        // Create custom dialog
+        Dialog<String> dialog = new Dialog<>();
+        dialog.setTitle(title);
+        dialog.setHeaderText(header);
+        
+        // Create content
+        VBox content = new VBox(10);
+        content.setPadding(new Insets(20));
+        
+        Label label = new Label(message);
+        TextField idField = new TextField();
+        idField.setPromptText("Ingresa el ID del producto...");
+        
+        content.getChildren().addAll(label, idField);
+        
+        dialog.getDialogPane().setContent(content);
+        
+        // Add OK button
+        ButtonType okButtonType = new ButtonType("OK", javafx.scene.control.ButtonBar.ButtonData.OK_DONE);
+        dialog.getDialogPane().getButtonTypes().addAll(okButtonType, ButtonType.CANCEL);
+        
+        // Add "Search by name" button
+        Button searchByNameBtn = new Button("🔍 No tengo el ID - Buscar por nombre");
+        searchByNameBtn.setStyle("-fx-background-color: #2196F3; -fx-text-fill: white; " +
+                                  "-fx-font-size: 11px; -fx-padding: 5 10 5 10; " +
+                                  "-fx-background-radius: 3;");
+        searchByNameBtn.setOnAction(e -> {
+            dialog.setResult("SEARCH_BY_NAME"); // Special marker
+            dialog.close();
+        });
+        
+        content.getChildren().add(searchByNameBtn);
+        
+        // Focus on text field
+        javafx.application.Platform.runLater(() -> idField.requestFocus());
+        
+        // Convert result
+        dialog.setResultConverter(dialogButton -> {
+            if (dialogButton == okButtonType) {
+                return idField.getText();
+            }
+            return null;
+        });
+        
+        // Show dialog and handle result
+        java.util.Optional<String> result = dialog.showAndWait();
+        if (result.isPresent()) {
+            String value = result.get();
+            if ("SEARCH_BY_NAME".equals(value)) {
+                // User wants to search by name
+                return searchProductByNameDialog();
+            }
+            return value;
+        }
+        return null;
+    }
+    
+    /**
+     * Shows a dialog to search products by name and select one.
+     * Returns the selected product ID or null if cancelled.
+     */
+    private String searchProductByNameDialog() {
+        try {
+            // Get all products
+            List<Product> allProducts = controller.getAllProducts();
+            if (allProducts.isEmpty()) {
+                showInfo("Sin Productos", "No hay productos registrados en el sistema.");
+                return null;
+            }
+            
+            // Create search dialog
+            Dialog<Product> dialog = new Dialog<>();
+            dialog.setTitle("Buscar por Nombre");
+            dialog.setHeaderText("Busca y selecciona un producto");
+            
+            VBox content = new VBox(10);
+            content.setPadding(new Insets(20));
+            
+            // Search field
+            TextField searchField = new TextField();
+            searchField.setPromptText("Escribe para buscar por nombre...");
+            
+            // TableView for results
+            TableView<Product> table = new TableView<>();
+            table.setPrefHeight(300);
+            table.setPrefWidth(700);
+            
+            // Define columns
+            TableColumn<Product, String> idCol = new TableColumn<>("ID");
+            idCol.setCellValueFactory(cellData -> 
+                new javafx.beans.property.SimpleStringProperty(cellData.getValue().getId()));
+            idCol.setPrefWidth(120);
+            
+            TableColumn<Product, String> nameCol = new TableColumn<>("Nombre");
+            nameCol.setCellValueFactory(cellData -> 
+                new javafx.beans.property.SimpleStringProperty(cellData.getValue().getName()));
+            nameCol.setPrefWidth(250);
+            
+            TableColumn<Product, Integer> stockCol = new TableColumn<>("Stock");
+            stockCol.setCellValueFactory(cellData -> 
+                new javafx.beans.property.SimpleIntegerProperty(cellData.getValue().getStockQuantity()).asObject());
+            stockCol.setPrefWidth(80);
+            
+            TableColumn<Product, String> priceCol = new TableColumn<>("Precio Venta");
+            priceCol.setCellValueFactory(cellData -> 
+                new javafx.beans.property.SimpleStringProperty(
+                    String.format("$%.2f", cellData.getValue().getSalePrice())));
+            priceCol.setPrefWidth(100);
+            
+            TableColumn<Product, String> categoryCol = new TableColumn<>("Categoría");
+            categoryCol.setCellValueFactory(cellData -> 
+                new javafx.beans.property.SimpleStringProperty(
+                    cellData.getValue().getCategory() != null ? 
+                        cellData.getValue().getCategory().getName() : "Sin categoría"));
+            categoryCol.setPrefWidth(150);
+            
+            table.getColumns().addAll(idCol, nameCol, stockCol, priceCol, categoryCol);
+            table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+            
+            // Initialize with all products
+            javafx.collections.ObservableList<Product> products = 
+                javafx.collections.FXCollections.observableArrayList(allProducts);
+            table.setItems(products);
+            
+            // Filter on search
+            searchField.textProperty().addListener((observable, oldValue, newValue) -> {
+                String searchText = newValue.toLowerCase().trim();
+                if (searchText.isEmpty()) {
+                    table.setItems(javafx.collections.FXCollections.observableArrayList(allProducts));
+                } else {
+                    List<Product> filtered = allProducts.stream()
+                        .filter(p -> p.getName().toLowerCase().contains(searchText))
+                        .toList();
+                    table.setItems(javafx.collections.FXCollections.observableArrayList(filtered));
+                }
+            });
+            
+            Label resultLabel = new Label("Total: " + allProducts.size() + " productos");
+            resultLabel.setStyle("-fx-font-size: 11px; -fx-text-fill: #666;");
+            
+            content.getChildren().addAll(
+                new Label("🔍 Buscar:"),
+                searchField,
+                resultLabel,
+                table
+            );
+            
+            dialog.getDialogPane().setContent(content);
+            
+            // Add buttons
+            ButtonType selectButtonType = new ButtonType("Seleccionar", javafx.scene.control.ButtonBar.ButtonData.OK_DONE);
+            dialog.getDialogPane().getButtonTypes().addAll(selectButtonType, ButtonType.CANCEL);
+            
+            // Enable/disable select button based on selection
+            javafx.scene.Node selectButton = dialog.getDialogPane().lookupButton(selectButtonType);
+            selectButton.setDisable(true);
+            
+            table.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
+                selectButton.setDisable(newSelection == null);
+            });
+            
+            // Focus on search field
+            javafx.application.Platform.runLater(() -> searchField.requestFocus());
+            
+            // Result converter
+            dialog.setResultConverter(dialogButton -> {
+                if (dialogButton == selectButtonType) {
+                    return table.getSelectionModel().getSelectedItem();
+                }
+                return null;
+            });
+            
+            // Show and get result
+            java.util.Optional<Product> result = dialog.showAndWait();
+            if (result.isPresent()) {
+                return result.get().getId();
+            }
+            
+        } catch (SQLException e) {
+            showError("Error", "Error al buscar productos: " + e.getMessage());
+        }
+        return null;
     }
 }
