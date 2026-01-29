@@ -918,10 +918,10 @@
                                 costDialog.setTitle("Precio de Costo");
                                 costDialog.setHeaderText("Precio de Costo");
                                 costDialog.setContentText("Precio de costo:");
-                                costDialog.getDialogPane().setMinWidth(650);
-                                costDialog.getDialogPane().setMinHeight(280);
-                                costDialog.getDialogPane().setStyle("-fx-font-size: 16px;");
-                                costDialog.getEditor().setStyle("-fx-font-size: 16px; -fx-pref-height: 45px;");
+                                costDialog.getDialogPane().setMinWidth(750);
+                                costDialog.getDialogPane().setMinHeight(320);
+                                costDialog.getDialogPane().setStyle("-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #000000;");
+                                costDialog.getEditor().setStyle("-fx-font-size: 20px; -fx-font-weight: bold; -fx-pref-height: 50px;");
 
                                 costDialog.showAndWait().ifPresent(costStr -> {
                                     try {
@@ -932,6 +932,10 @@
                                         saleDialog.setTitle("Precio de Venta");
                                         saleDialog.setHeaderText("Precio de Venta");
                                         saleDialog.setContentText("Precio de venta:");
+                                        saleDialog.getDialogPane().setMinWidth(750);
+                                        saleDialog.getDialogPane().setMinHeight(320);
+                                        saleDialog.getDialogPane().setStyle("-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #000000;");
+                                        saleDialog.getEditor().setStyle("-fx-font-size: 20px; -fx-font-weight: bold; -fx-pref-height: 50px;");
 
                                         saleDialog.showAndWait().ifPresent(saleStr -> {
                                             try {
@@ -942,6 +946,10 @@
                                                 stockDialog.setTitle("Stock Inicial");
                                                 stockDialog.setHeaderText("Stock Inicial");
                                                 stockDialog.setContentText("Cantidad inicial en stock:");
+                                                stockDialog.getDialogPane().setMinWidth(750);
+                                                stockDialog.getDialogPane().setMinHeight(320);
+                                                stockDialog.getDialogPane().setStyle("-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #000000;");
+                                                stockDialog.getEditor().setStyle("-fx-font-size: 20px; -fx-font-weight: bold; -fx-pref-height: 50px;");
 
                                                 stockDialog.showAndWait().ifPresent(stockStr -> {
                                                     try {
@@ -952,6 +960,9 @@
                                                         categoryDialog.setTitle("Seleccionar Categoría");
                                                         categoryDialog.setHeaderText("Categoría del Producto");
                                                         categoryDialog.setContentText("Selecciona la categoría:");
+                                                        categoryDialog.getDialogPane().setMinWidth(750);
+                                                        categoryDialog.getDialogPane().setMinHeight(320);
+                                                        categoryDialog.getDialogPane().setStyle("-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #000000;");
                                                         categoryDialog.getItems().addAll(categories);
                                                         categoryDialog.setSelectedItem(categories.get(0)); // Default to first category
 
@@ -1014,54 +1025,62 @@
                 // Create TableView
                 TableView<Product> table = new TableView<>();
                 table.setItems(javafx.collections.FXCollections.observableArrayList(products));
+                table.setStyle("-fx-font-size: 15px; -fx-font-weight: bold;");
+                table.setFixedCellSize(35);
                 
                 // Define columns
                 TableColumn<Product, String> idCol = new TableColumn<>("ID");
                 idCol.setCellValueFactory(cellData -> 
                     new javafx.beans.property.SimpleStringProperty(cellData.getValue().getId()));
-                idCol.setPrefWidth(100);
+                idCol.setPrefWidth(120);
+                idCol.setStyle("-fx-alignment: CENTER; -fx-font-size: 15px; -fx-font-weight: bold;");
                 
                 TableColumn<Product, String> nameCol = new TableColumn<>("Nombre");
                 nameCol.setCellValueFactory(cellData -> 
                     new javafx.beans.property.SimpleStringProperty(cellData.getValue().getName()));
-                nameCol.setPrefWidth(200);
+                nameCol.setPrefWidth(250);
+                nameCol.setStyle("-fx-font-size: 15px; -fx-font-weight: bold;");
                 
                 TableColumn<Product, Integer> stockCol = new TableColumn<>("Stock");
                 stockCol.setCellValueFactory(cellData -> 
                     new javafx.beans.property.SimpleIntegerProperty(cellData.getValue().getStockQuantity()).asObject());
-                stockCol.setPrefWidth(80);
+                stockCol.setPrefWidth(90);
+                stockCol.setStyle("-fx-alignment: CENTER; -fx-font-size: 15px; -fx-font-weight: bold;");
                 
                 TableColumn<Product, String> costCol = new TableColumn<>("Precio Costo");
                 costCol.setCellValueFactory(cellData -> 
                     new javafx.beans.property.SimpleStringProperty(
                         String.format("$%.2f", cellData.getValue().getCostPrice())));
-                costCol.setPrefWidth(100);
+                costCol.setPrefWidth(120);
+                costCol.setStyle("-fx-alignment: CENTER; -fx-font-size: 15px; -fx-font-weight: bold;");
                 
                 TableColumn<Product, String> saleCol = new TableColumn<>("Precio Venta");
                 saleCol.setCellValueFactory(cellData -> 
                     new javafx.beans.property.SimpleStringProperty(
                         String.format("$%.2f", cellData.getValue().getSalePrice())));
-                saleCol.setPrefWidth(100);
+                saleCol.setPrefWidth(120);
+                saleCol.setStyle("-fx-alignment: CENTER; -fx-font-size: 15px; -fx-font-weight: bold;");
                 
                 TableColumn<Product, String> categoryCol = new TableColumn<>("Categoría");
                 categoryCol.setCellValueFactory(cellData -> 
                     new javafx.beans.property.SimpleStringProperty(
                         cellData.getValue().getCategory() != null ? 
                             cellData.getValue().getCategory().getName() : "Sin categoría"));
-                categoryCol.setPrefWidth(150);
+                categoryCol.setPrefWidth(180);
+                categoryCol.setStyle("-fx-alignment: CENTER; -fx-font-size: 15px; -fx-font-weight: bold;");
                 
                 table.getColumns().addAll(idCol, nameCol, stockCol, costCol, saleCol, categoryCol);
                 
                 // Set table properties
                 table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
-                table.setPrefHeight(400);
-                table.setPrefWidth(750);
+                table.setPrefHeight(500);
+                table.setPrefWidth(950);
                 
-                VBox content = new VBox(10);
-                content.setPadding(new Insets(10));
+                VBox content = new VBox(15);
+                content.setPadding(new Insets(15));
                 
                 Label summary = new Label("Total de productos: " + products.size());
-                summary.setStyle("-fx-font-weight: bold; -fx-font-size: 14px;");
+                summary.setStyle("-fx-font-weight: bold; -fx-font-size: 17px;");
                 
                 content.getChildren().addAll(summary, table);
                 
@@ -1090,30 +1109,34 @@
                 // Create TableView
                 TableView<Category> table = new TableView<>();
                 table.setItems(javafx.collections.FXCollections.observableArrayList(categories));
+                table.setStyle("-fx-font-size: 15px; -fx-font-weight: bold;");
+                table.setFixedCellSize(35);
                 
                 // Define columns
                 TableColumn<Category, Integer> idCol = new TableColumn<>("ID");
                 idCol.setCellValueFactory(cellData -> 
                     new javafx.beans.property.SimpleIntegerProperty(cellData.getValue().getId()).asObject());
-                idCol.setPrefWidth(80);
+                idCol.setPrefWidth(100);
+                idCol.setStyle("-fx-alignment: CENTER; -fx-font-size: 15px; -fx-font-weight: bold;");
                 
                 TableColumn<Category, String> nameCol = new TableColumn<>("Nombre");
                 nameCol.setCellValueFactory(cellData -> 
                     new javafx.beans.property.SimpleStringProperty(cellData.getValue().getName()));
-                nameCol.setPrefWidth(350);
+                nameCol.setPrefWidth(450);
+                nameCol.setStyle("-fx-font-size: 15px; -fx-font-weight: bold;");
                 
                 table.getColumns().addAll(idCol, nameCol);
                 
                 // Set table properties
                 table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
-                table.setPrefHeight(400);
-                table.setPrefWidth(450);
+                table.setPrefHeight(500);
+                table.setPrefWidth(600);
                 
-                VBox content = new VBox(10);
-                content.setPadding(new Insets(10));
+                VBox content = new VBox(15);
+                content.setPadding(new Insets(15));
                 
                 Label summary = new Label("Total de categorías: " + categories.size());
-                summary.setStyle("-fx-font-weight: bold; -fx-font-size: 14px;");
+                summary.setStyle("-fx-font-weight: bold; -fx-font-size: 17px;");
                 
                 content.getChildren().addAll(summary, table);
                 
@@ -1153,6 +1176,10 @@
                         saleDialog.setTitle("Precio de Venta");
                         saleDialog.setHeaderText("Nuevo Precio de Venta");
                         saleDialog.setContentText("Nuevo precio de venta:");
+                        saleDialog.getDialogPane().setMinWidth(750);
+                        saleDialog.getDialogPane().setMinHeight(320);
+                        saleDialog.getDialogPane().setStyle("-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #000000;");
+                        saleDialog.getEditor().setStyle("-fx-font-size: 20px; -fx-font-weight: bold; -fx-pref-height: 50px;");
 
                         saleDialog.showAndWait().ifPresent(saleStr -> {
                             try {
@@ -1317,19 +1344,23 @@
                 
                 // TableView for categories
                 TableView<Category> table = new TableView<>();
-                table.setPrefHeight(300);
-                table.setPrefWidth(500);
+                table.setPrefHeight(400);
+                table.setPrefWidth(650);
+                table.setStyle("-fx-font-size: 15px; -fx-font-weight: bold;");
+                table.setFixedCellSize(35);
                 
                 // Define columns
                 TableColumn<Category, Integer> idCol = new TableColumn<>("ID");
                 idCol.setCellValueFactory(cellData -> 
                     new javafx.beans.property.SimpleIntegerProperty(cellData.getValue().getId()).asObject());
-                idCol.setPrefWidth(80);
+                idCol.setPrefWidth(100);
+                idCol.setStyle("-fx-alignment: CENTER; -fx-font-size: 15px; -fx-font-weight: bold;");
                 
                 TableColumn<Category, String> nameCol = new TableColumn<>("Nombre");
                 nameCol.setCellValueFactory(cellData -> 
                     new javafx.beans.property.SimpleStringProperty(cellData.getValue().getName()));
-                nameCol.setPrefWidth(420);
+                nameCol.setPrefWidth(550);
+                nameCol.setStyle("-fx-font-size: 15px; -fx-font-weight: bold;");
                 
                 table.getColumns().addAll(idCol, nameCol);
                 table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
@@ -1340,9 +1371,10 @@
                 table.setItems(categories);
                 
                 Label infoLabel = new Label("⚠️ Los productos de esta categoría quedarán sin categoría");
-                infoLabel.setStyle("-fx-font-size: 11px; -fx-text-fill: #d32f2f; -fx-font-weight: bold;");
+                infoLabel.setStyle("-fx-font-size: 14px; -fx-text-fill: #d32f2f; -fx-font-weight: bold;");
                 
                 Label countLabel = new Label("Total: " + allCategories.size() + " categorías");
+                countLabel.setStyle("-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #333;");
                 countLabel.setStyle("-fx-font-size: 11px; -fx-text-fill: #666;");
                 
                 content.getChildren().addAll(
@@ -1525,40 +1557,48 @@
                 // Search field
                 TextField searchField = new TextField();
                 searchField.setPromptText("Escribe para buscar por nombre...");
+                searchField.setStyle("-fx-font-size: 18px; -fx-font-weight: bold; -fx-pref-height: 50px;");
                 
                 // TableView for results
                 TableView<Product> table = new TableView<>();
-                table.setPrefHeight(300);
-                table.setPrefWidth(700);
+                table.setPrefHeight(450);
+                table.setPrefWidth(1000);
+                table.setStyle("-fx-font-size: 16px; -fx-font-weight: bold;");
+                table.setFixedCellSize(35);
                 
                 // Define columns
                 TableColumn<Product, String> idCol = new TableColumn<>("ID");
                 idCol.setCellValueFactory(cellData -> 
                     new javafx.beans.property.SimpleStringProperty(cellData.getValue().getId()));
-                idCol.setPrefWidth(120);
+                idCol.setPrefWidth(150);
+                idCol.setStyle("-fx-font-size: 16px; -fx-font-weight: bold; -fx-alignment: CENTER;");
                 
                 TableColumn<Product, String> nameCol = new TableColumn<>("Nombre");
                 nameCol.setCellValueFactory(cellData -> 
                     new javafx.beans.property.SimpleStringProperty(cellData.getValue().getName()));
-                nameCol.setPrefWidth(250);
+                nameCol.setPrefWidth(320);
+                nameCol.setStyle("-fx-font-size: 16px; -fx-font-weight: bold;");
                 
                 TableColumn<Product, Integer> stockCol = new TableColumn<>("Stock");
                 stockCol.setCellValueFactory(cellData -> 
                     new javafx.beans.property.SimpleIntegerProperty(cellData.getValue().getStockQuantity()).asObject());
-                stockCol.setPrefWidth(80);
+                stockCol.setPrefWidth(100);
+                stockCol.setStyle("-fx-font-size: 16px; -fx-font-weight: bold; -fx-alignment: CENTER;");
                 
                 TableColumn<Product, String> priceCol = new TableColumn<>("Precio Venta");
                 priceCol.setCellValueFactory(cellData -> 
                     new javafx.beans.property.SimpleStringProperty(
                         String.format("$%.2f", cellData.getValue().getSalePrice())));
-                priceCol.setPrefWidth(100);
+                priceCol.setPrefWidth(150);
+                priceCol.setStyle("-fx-font-size: 16px; -fx-font-weight: bold; -fx-alignment: CENTER;");
                 
                 TableColumn<Product, String> categoryCol = new TableColumn<>("Categoría");
                 categoryCol.setCellValueFactory(cellData -> 
                     new javafx.beans.property.SimpleStringProperty(
                         cellData.getValue().getCategory() != null ? 
                             cellData.getValue().getCategory().getName() : "Sin categoría"));
-                categoryCol.setPrefWidth(150);
+                categoryCol.setPrefWidth(200);
+                categoryCol.setStyle("-fx-font-size: 16px; -fx-font-weight: bold; -fx-alignment: CENTER;");
                 
                 table.getColumns().addAll(idCol, nameCol, stockCol, priceCol, categoryCol);
                 table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
@@ -1581,11 +1621,14 @@
                     }
                 });
                 
+                Label searchLabel = new Label("🔍 Buscar:");
+                searchLabel.setStyle("-fx-font-size: 18px; -fx-font-weight: bold;");
+                
                 Label resultLabel = new Label("Total: " + allProducts.size() + " productos");
-                resultLabel.setStyle("-fx-font-size: 11px; -fx-text-fill: #666;");
+                resultLabel.setStyle("-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #333;");
                 
                 content.getChildren().addAll(
-                    new Label("🔍 Buscar:"),
+                    searchLabel,
                     searchField,
                     resultLabel,
                     table
