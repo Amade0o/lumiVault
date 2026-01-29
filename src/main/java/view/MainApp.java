@@ -679,12 +679,13 @@
             dialog.setTitle("Gestión de Categorías");
             dialog.setHeaderText("Administrar Categorías del Inventario");
             
-            VBox content = new VBox(16);
-            content.setPadding(new Insets(20));
+            VBox content = new VBox(20);
+            content.setPadding(new Insets(30));
             
             // Buttons for category actions
             Button addCatBtn = new Button("➕ Agregar Nueva Categoría");
             addCatBtn.setMaxWidth(Double.MAX_VALUE);
+            addCatBtn.setStyle("-fx-font-size: 18px; -fx-font-weight: bold; -fx-padding: 15px; -fx-background-color: #2D5016; -fx-text-fill: white; -fx-background-radius: 5px;");
             addCatBtn.setOnAction(e -> {
                 addCategory();
                 dialog.close();
@@ -692,7 +693,7 @@
             
             Button removeCatBtn = new Button("🗑️ Eliminar Categoría");
             removeCatBtn.setMaxWidth(Double.MAX_VALUE);
-            removeCatBtn.setStyle("-fx-background-color: #d32f2f; -fx-text-fill: white;");
+            removeCatBtn.setStyle("-fx-font-size: 18px; -fx-font-weight: bold; -fx-padding: 15px; -fx-background-color: #d32f2f; -fx-text-fill: white; -fx-background-radius: 5px;");
             removeCatBtn.setOnAction(e -> {
                 removeCategory();
                 dialog.close();
@@ -700,6 +701,7 @@
             
             Button listCatBtn = new Button("📋 Listar Todas las Categorías");
             listCatBtn.setMaxWidth(Double.MAX_VALUE);
+            listCatBtn.setStyle("-fx-font-size: 18px; -fx-font-weight: bold; -fx-padding: 15px; -fx-background-color: #2D5016; -fx-text-fill: white; -fx-background-radius: 5px;");
             listCatBtn.setOnAction(e -> {
                 listCategories();
                 dialog.close();
@@ -708,6 +710,9 @@
             content.getChildren().addAll(addCatBtn, removeCatBtn, listCatBtn);
             
             dialog.getDialogPane().setContent(content);
+            dialog.getDialogPane().setMinWidth(700);
+            dialog.getDialogPane().setMinHeight(400);
+            dialog.getDialogPane().setStyle("-fx-font-size: 20px; -fx-font-weight: bold;");
             dialog.getDialogPane().getButtonTypes().add(ButtonType.CLOSE);
             dialog.showAndWait();
         }
@@ -717,11 +722,12 @@
             dialog.setTitle("Gestión de Productos");
             dialog.setHeaderText("Administrar Productos del Inventario");
             
-            VBox content = new VBox(16);
-            content.setPadding(new Insets(20));
+            VBox content = new VBox(20);
+            content.setPadding(new Insets(30));
             
             Button addProdBtn = new Button("➕ Agregar Nuevo Producto");
             addProdBtn.setMaxWidth(Double.MAX_VALUE);
+            addProdBtn.setStyle("-fx-font-size: 18px; -fx-font-weight: bold; -fx-padding: 15px; -fx-background-color: #2D5016; -fx-text-fill: white; -fx-background-radius: 5px;");
             addProdBtn.setOnAction(e -> {
                 addProduct();
                 dialog.close();
@@ -729,6 +735,7 @@
             
             Button updatePriceBtn = new Button("💰 Actualizar Precio de Producto");
             updatePriceBtn.setMaxWidth(Double.MAX_VALUE);
+            updatePriceBtn.setStyle("-fx-font-size: 18px; -fx-font-weight: bold; -fx-padding: 15px; -fx-background-color: #2D5016; -fx-text-fill: white; -fx-background-radius: 5px;");
             updatePriceBtn.setOnAction(e -> {
                 updatePrice();
                 dialog.close();
@@ -736,7 +743,7 @@
             
             Button removeProdBtn = new Button("🗑️ Eliminar Producto");
             removeProdBtn.setMaxWidth(Double.MAX_VALUE);
-            removeProdBtn.setStyle("-fx-background-color: #d32f2f; -fx-text-fill: white;");
+            removeProdBtn.setStyle("-fx-font-size: 18px; -fx-font-weight: bold; -fx-padding: 15px; -fx-background-color: #d32f2f; -fx-text-fill: white; -fx-background-radius: 5px;");
             removeProdBtn.setOnAction(e -> {
                 removeProduct();
                 dialog.close();
@@ -744,6 +751,7 @@
             
             Button listProdBtn = new Button("📋 Listar Todos los Productos");
             listProdBtn.setMaxWidth(Double.MAX_VALUE);
+            listProdBtn.setStyle("-fx-font-size: 18px; -fx-font-weight: bold; -fx-padding: 15px; -fx-background-color: #2D5016; -fx-text-fill: white; -fx-background-radius: 5px;");
             listProdBtn.setOnAction(e -> {
                 listProducts();
                 dialog.close();
@@ -752,6 +760,9 @@
             content.getChildren().addAll(addProdBtn, updatePriceBtn, removeProdBtn, listProdBtn);
             
             dialog.getDialogPane().setContent(content);
+            dialog.getDialogPane().setMinWidth(750);
+            dialog.getDialogPane().setMinHeight(480);
+            dialog.getDialogPane().setStyle("-fx-font-size: 20px; -fx-font-weight: bold;");
             dialog.getDialogPane().getButtonTypes().add(ButtonType.CLOSE);
             dialog.showAndWait();
         }
@@ -761,11 +772,12 @@
             dialog.setTitle("Movimientos de Stock");
             dialog.setHeaderText("Registrar Entradas y Salidas");
             
-            VBox content = new VBox(16);
-            content.setPadding(new Insets(20));
+            VBox content = new VBox(20);
+            content.setPadding(new Insets(30));
             
             Button addStockBtn = new Button("➕ Agregar Stock (Entrada)");
             addStockBtn.setMaxWidth(Double.MAX_VALUE);
+            addStockBtn.setStyle("-fx-font-size: 18px; -fx-font-weight: bold; -fx-padding: 15px; -fx-background-color: #2D5016; -fx-text-fill: white; -fx-background-radius: 5px;");
             addStockBtn.setOnAction(e -> {
                 addStock();
                 dialog.close();
@@ -773,6 +785,7 @@
             
             Button removeStockBtn = new Button("➖ Quitar Stock (Salida)");
             removeStockBtn.setMaxWidth(Double.MAX_VALUE);
+            removeStockBtn.setStyle("-fx-font-size: 18px; -fx-font-weight: bold; -fx-padding: 15px; -fx-background-color: #2D5016; -fx-text-fill: white; -fx-background-radius: 5px;");
             removeStockBtn.setOnAction(e -> {
                 removeStock();
                 dialog.close();
@@ -781,6 +794,9 @@
             content.getChildren().addAll(addStockBtn, removeStockBtn);
             
             dialog.getDialogPane().setContent(content);
+            dialog.getDialogPane().setMinWidth(700);
+            dialog.getDialogPane().setMinHeight(350);
+            dialog.getDialogPane().setStyle("-fx-font-size: 20px; -fx-font-weight: bold;");
             dialog.getDialogPane().getButtonTypes().add(ButtonType.CLOSE);
             dialog.showAndWait();
         }
