@@ -360,46 +360,41 @@
          */
         private GridPane createPrimaryActionCards() {
             GridPane grid = new GridPane();
-            grid.setHgap(16);
+            grid.setHgap(24);
             grid.setVgap(16);
             grid.setPadding(new Insets(8));
             grid.setAlignment(Pos.CENTER);
             
-            // Configure columns with fixed width to avoid overlap
-            for (int i = 0; i < 3; i++) {
+            // Configure columns with larger width for 2 main cards
+            for (int i = 0; i < 2; i++) {
                 ColumnConstraints col = new ColumnConstraints();
-                col.setMinWidth(320);
-                col.setPrefWidth(340);
-                col.setMaxWidth(400);
+                col.setMinWidth(400);
+                col.setPrefWidth(480);
+                col.setMaxWidth(550);
                 col.setHgrow(Priority.SOMETIMES);
                 grid.getColumnConstraints().add(col);
             }
             
             // Configure row with fixed height
             RowConstraints row = new RowConstraints();
-            row.setMinHeight(200);
-            row.setPrefHeight(200);
-            row.setMaxHeight(200);
+            row.setMinHeight(260);
+            row.setPrefHeight(280);
+            row.setMaxHeight(300);
             row.setVgrow(Priority.NEVER);
             grid.getRowConstraints().add(row);
             
-            // Create primary action cards
-            VBox searchCard = createActionCard("🔍", "Buscar Productos", 
-                "Buscar y filtrar productos existentes",
-                () -> showSearch());
-            
-            VBox productCard = createActionCard("📦", "Gestión de Productos", 
+            // Create primary action cards - only 2 main actions with larger size
+            VBox productCard = createLargeActionCard("📦", "Gestión de Productos", 
                 "Agregar y editar productos del inventario",
                 () -> showProductManagement());
             
-            VBox categoryCard = createActionCard("📁", "Gestión de Categorías", 
-                "Crear y administrar categorías de productos",
-                () -> showCategoryManagement());
+            VBox searchCard = createLargeActionCard("🔍", "Buscar Productos", 
+                "Buscar y filtrar productos existentes",
+                () -> showSearch());
             
             // Add cards to grid
             grid.add(productCard, 0, 0);
             grid.add(searchCard, 1, 0);
-            grid.add(categoryCard, 2, 0);
             
             return grid;
         }
@@ -441,14 +436,14 @@
                 "Actualizar los gráficos con datos recientes",
                 () -> showReports());
             
-            VBox settingsCard = createActionCard("⚙️", "Configuración", 
-                "Ajustes y preferencias del sistema",
-                () -> showSettings());
+            VBox categoryCard = createActionCard("📁", "Gestión de Categorías", 
+                "Crear y administrar categorías de productos",
+                () -> showCategoryManagement());
             
             // Add cards to grid
             grid.add(stockCard, 0, 0);
             grid.add(reportsCard, 1, 0);
-            grid.add(settingsCard, 2, 0);
+            grid.add(categoryCard, 2, 0);
             
             return grid;
         }
@@ -508,6 +503,80 @@
                 actionBtn.setStyle("-fx-background-color: #2D5016; -fx-text-fill: white; " +
                                 "-fx-font-size: 14px; -fx-font-weight: 500; " +
                                 "-fx-padding: 10px 20px; -fx-background-radius: 4px; " +
+                                "-fx-cursor: hand;"));
+            
+            card.getChildren().addAll(iconLabel, titleLabel, descLabel, spacer, actionBtn);
+            
+            // Card hover effect
+            card.setOnMouseEntered(e -> {
+                card.setStyle("-fx-background-color: white; -fx-background-radius: 8px; " +
+                            "-fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 14, 0, 0, 5); " +
+                            "-fx-cursor: hand;");
+            });
+            card.setOnMouseExited(e -> {
+                card.setStyle("-fx-background-color: white; -fx-background-radius: 8px; " +
+                            "-fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.12), 10, 0, 0, 2);");
+            });
+            
+            return card;
+        }
+        
+        /**
+         * Creates a large action card with bigger icon, title, description and action button
+         * Used for primary action cards
+         */
+        private VBox createLargeActionCard(String icon, String title, String description, Runnable action) {
+            VBox card = new VBox(12);
+            card.setAlignment(Pos.TOP_LEFT);
+            card.setPadding(new Insets(28));
+            card.setStyle("-fx-background-color: white; -fx-background-radius: 8px; " +
+                        "-fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.12), 10, 0, 0, 2);");
+            card.setMinHeight(260);
+            card.setPrefHeight(280);
+            card.setMaxHeight(300);
+            card.setMaxWidth(Double.MAX_VALUE);
+            
+            // Icon - larger
+            Label iconLabel = new Label(icon);
+            iconLabel.setStyle("-fx-font-size: 52px;");
+            
+            // Title - larger
+            Label titleLabel = new Label(title);
+            titleLabel.setStyle("-fx-font-size: 21px; -fx-font-weight: 600; -fx-text-fill: #212121;");
+            titleLabel.setWrapText(true);
+            titleLabel.setMaxWidth(Double.MAX_VALUE);
+            
+            // Description - larger
+            Label descLabel = new Label(description);
+            descLabel.setStyle("-fx-font-size: 16px; -fx-text-fill: #757575;");
+            descLabel.setWrapText(true);
+            descLabel.setMaxWidth(Double.MAX_VALUE);
+            descLabel.setPrefHeight(45);
+            
+            // Spacer
+            Region spacer = new Region();
+            VBox.setVgrow(spacer, Priority.ALWAYS);
+            
+            // Action button - larger
+            Button actionBtn = new Button("Abrir");
+            actionBtn.setStyle("-fx-background-color: #2D5016; -fx-text-fill: white; " +
+                            "-fx-font-size: 16px; -fx-font-weight: 500; " +
+                            "-fx-padding: 12px 24px; -fx-background-radius: 4px; " +
+                            "-fx-cursor: hand;");
+            actionBtn.setMaxWidth(Double.MAX_VALUE);
+            actionBtn.setMinWidth(120);
+            actionBtn.setOnAction(e -> action.run());
+            
+            // Hover effect for button
+            actionBtn.setOnMouseEntered(e -> 
+                actionBtn.setStyle("-fx-background-color: #3A6B1D; -fx-text-fill: white; " +
+                                "-fx-font-size: 16px; -fx-font-weight: 500; " +
+                                "-fx-padding: 12px 24px; -fx-background-radius: 4px; " +
+                                "-fx-cursor: hand;"));
+            actionBtn.setOnMouseExited(e -> 
+                actionBtn.setStyle("-fx-background-color: #2D5016; -fx-text-fill: white; " +
+                                "-fx-font-size: 16px; -fx-font-weight: 500; " +
+                                "-fx-padding: 12px 24px; -fx-background-radius: 4px; " +
                                 "-fx-cursor: hand;"));
             
             card.getChildren().addAll(iconLabel, titleLabel, descLabel, spacer, actionBtn);
@@ -739,61 +808,13 @@
                     if (results.isEmpty()) {
                         showInfo("Búsqueda", "🔍 No se encontró ningún producto con ID: " + id);
                     } else {
-                        // Show results in a popup table
-                        Dialog<ButtonType> resultDialog = new Dialog<>();
-                        resultDialog.setTitle("Resultado de Búsqueda");
-                        resultDialog.setHeaderText("🔍 Resultado para ID: " + id);
-                        
-                        TableView<Product> table = new TableView<>();
-                        table.setItems(javafx.collections.FXCollections.observableArrayList(results));
-                        
-                        // Define columns
-                        TableColumn<Product, String> idCol = new TableColumn<>("ID");
-                        idCol.setCellValueFactory(cellData -> 
-                            new javafx.beans.property.SimpleStringProperty(cellData.getValue().getId()));
-                        idCol.setPrefWidth(100);
-                        
-                        TableColumn<Product, String> nameCol = new TableColumn<>("Nombre");
-                        nameCol.setCellValueFactory(cellData -> 
-                            new javafx.beans.property.SimpleStringProperty(cellData.getValue().getName()));
-                        nameCol.setPrefWidth(200);
-                        
-                        TableColumn<Product, Integer> stockCol = new TableColumn<>("Stock");
-                        stockCol.setCellValueFactory(cellData -> 
-                            new javafx.beans.property.SimpleIntegerProperty(cellData.getValue().getStockQuantity()).asObject());
-                        stockCol.setPrefWidth(80);
-                        
-                        TableColumn<Product, String> costCol = new TableColumn<>("Precio Costo");
-                        costCol.setCellValueFactory(cellData -> 
-                            new javafx.beans.property.SimpleStringProperty(
-                                String.format("$%.2f", cellData.getValue().getCostPrice())));
-                        costCol.setPrefWidth(100);
-                        
-                        TableColumn<Product, String> saleCol = new TableColumn<>("Precio Venta");
-                        saleCol.setCellValueFactory(cellData -> 
-                            new javafx.beans.property.SimpleStringProperty(
-                                String.format("$%.2f", cellData.getValue().getSalePrice())));
-                        saleCol.setPrefWidth(100);
-                        
-                        TableColumn<Product, String> categoryCol = new TableColumn<>("Categoría");
-                        categoryCol.setCellValueFactory(cellData -> 
-                            new javafx.beans.property.SimpleStringProperty(
-                                cellData.getValue().getCategory() != null ? 
-                                    cellData.getValue().getCategory().getName() : "Sin categoría"));
-                        categoryCol.setPrefWidth(150);
-                        
-                        table.getColumns().addAll(idCol, nameCol, stockCol, costCol, saleCol, categoryCol);
-                        table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
-                        table.setPrefHeight(150);
-                        table.setPrefWidth(750);
-                        
-                        VBox content = new VBox(10);
-                        content.setPadding(new Insets(10));
-                        content.getChildren().add(table);
-                        
-                        resultDialog.getDialogPane().setContent(content);
-                        resultDialog.getDialogPane().getButtonTypes().add(ButtonType.CLOSE);
-                        resultDialog.showAndWait();
+                        // Show simple result with name and price only
+                        Product product = results.get(0);
+                        Alert resultAlert = new Alert(Alert.AlertType.INFORMATION);
+                        resultAlert.setTitle("Producto Encontrado");
+                        resultAlert.setHeaderText("✓ Producto: " + product.getName());
+                        resultAlert.setContentText("Precio de Venta: $" + String.format("%.2f", product.getSalePrice()));
+                        resultAlert.showAndWait();
                     }
                 } catch (SQLException e) {
                     showError("Error", "Error en la búsqueda: " + e.getMessage());
