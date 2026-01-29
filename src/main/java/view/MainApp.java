@@ -813,7 +813,25 @@
                         Alert resultAlert = new Alert(Alert.AlertType.INFORMATION);
                         resultAlert.setTitle("Producto Encontrado");
                         resultAlert.setHeaderText("✓ Producto: " + product.getName());
-                        resultAlert.setContentText("Precio de Venta: $" + String.format("%.2f", product.getSalePrice()));
+                        
+                        // Create custom content with large centered price
+                        VBox content = new VBox(20);
+                        content.setAlignment(Pos.CENTER);
+                        content.setPadding(new Insets(30, 20, 30, 20));
+                        
+                        Label priceLabel = new Label("Precio de Venta");
+                        priceLabel.setStyle("-fx-font-size: 18px; -fx-font-weight: normal; -fx-text-fill: #555555;");
+                        
+                        Label priceValue = new Label("$" + String.format("%.2f", product.getSalePrice()));
+                        priceValue.setStyle("-fx-font-size: 48px; -fx-font-weight: bold; -fx-text-fill: #000000;");
+                        priceValue.setAlignment(Pos.CENTER);
+                        
+                        content.getChildren().addAll(priceLabel, priceValue);
+                        
+                        resultAlert.getDialogPane().setContent(content);
+                        resultAlert.getDialogPane().setMinWidth(700);
+                        resultAlert.getDialogPane().setMinHeight(350);
+                        resultAlert.getDialogPane().setStyle("-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: #000000;");
                         resultAlert.showAndWait();
                     }
                 } catch (SQLException e) {
@@ -840,6 +858,10 @@
             dialog.setTitle("Agregar Categoría");
             dialog.setHeaderText("Nueva Categoría");
             dialog.setContentText("Nombre de la categoría:");
+            dialog.getDialogPane().setMinWidth(700);
+            dialog.getDialogPane().setMinHeight(300);
+            dialog.getDialogPane().setStyle("-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #000000;");
+            dialog.getEditor().setStyle("-fx-font-size: 20px; -fx-font-weight: bold; -fx-pref-height: 50px;");
 
             dialog.showAndWait().ifPresent(name -> {
                 if (!name.trim().isEmpty()) {
@@ -872,6 +894,10 @@
                 idDialog.setTitle("Agregar Producto");
                 idDialog.setHeaderText("Nuevo Producto");
                 idDialog.setContentText("ID del producto (código de barras):");
+                idDialog.getDialogPane().setMinWidth(750);
+                idDialog.getDialogPane().setMinHeight(320);
+                idDialog.getDialogPane().setStyle("-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #000000;");
+                idDialog.getEditor().setStyle("-fx-font-size: 20px; -fx-font-weight: bold; -fx-pref-height: 50px;");
 
                 idDialog.showAndWait().ifPresent(productId -> {
                     if (!productId.trim().isEmpty()) {
@@ -880,6 +906,10 @@
                         nameDialog.setTitle("Agregar Producto");
                         nameDialog.setHeaderText("Nuevo Producto");
                         nameDialog.setContentText("Nombre del producto:");
+                        nameDialog.getDialogPane().setMinWidth(750);
+                        nameDialog.getDialogPane().setMinHeight(320);
+                        nameDialog.getDialogPane().setStyle("-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #000000;");
+                        nameDialog.getEditor().setStyle("-fx-font-size: 20px; -fx-font-weight: bold; -fx-pref-height: 50px;");
 
                         nameDialog.showAndWait().ifPresent(name -> {
                             if (!name.trim().isEmpty()) {
@@ -888,6 +918,10 @@
                                 costDialog.setTitle("Precio de Costo");
                                 costDialog.setHeaderText("Precio de Costo");
                                 costDialog.setContentText("Precio de costo:");
+                                costDialog.getDialogPane().setMinWidth(650);
+                                costDialog.getDialogPane().setMinHeight(280);
+                                costDialog.getDialogPane().setStyle("-fx-font-size: 16px;");
+                                costDialog.getEditor().setStyle("-fx-font-size: 16px; -fx-pref-height: 45px;");
 
                                 costDialog.showAndWait().ifPresent(costStr -> {
                                     try {
@@ -1105,6 +1139,10 @@
                 costDialog.setTitle("Precio de Costo");
                 costDialog.setHeaderText("Nuevo Precio de Costo");
                 costDialog.setContentText("Nuevo precio de costo:");
+                costDialog.getDialogPane().setMinWidth(750);
+                costDialog.getDialogPane().setMinHeight(320);
+                costDialog.getDialogPane().setStyle("-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #000000;");
+                costDialog.getEditor().setStyle("-fx-font-size: 20px; -fx-font-weight: bold; -fx-pref-height: 50px;");
 
                 costDialog.showAndWait().ifPresent(costStr -> {
                     try {
@@ -1157,6 +1195,10 @@
                 quantityDialog.setTitle("Agregar Stock");
                 quantityDialog.setHeaderText("Cantidad a agregar");
                 quantityDialog.setContentText("Cantidad:");
+                quantityDialog.getDialogPane().setMinWidth(750);
+                quantityDialog.getDialogPane().setMinHeight(320);
+                quantityDialog.getDialogPane().setStyle("-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #000000;");
+                quantityDialog.getEditor().setStyle("-fx-font-size: 20px; -fx-font-weight: bold; -fx-pref-height: 50px;");
 
                 quantityDialog.showAndWait().ifPresent(quantityStr -> {
                     try {
@@ -1195,6 +1237,10 @@
                 quantityDialog.setTitle("Quitar Stock");
                 quantityDialog.setHeaderText("Cantidad a quitar");
                 quantityDialog.setContentText("Cantidad:");
+                quantityDialog.getDialogPane().setMinWidth(750);
+                quantityDialog.getDialogPane().setMinHeight(320);
+                quantityDialog.getDialogPane().setStyle("-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #000000;");
+                quantityDialog.getEditor().setStyle("-fx-font-size: 20px; -fx-font-weight: bold; -fx-pref-height: 50px;");
 
                 quantityDialog.showAndWait().ifPresent(quantityStr -> {
                     try {
@@ -1234,6 +1280,9 @@
                 confirmAlert.setTitle("Confirmar Eliminación");
                 confirmAlert.setHeaderText("¿Está seguro que desea eliminar este producto?");
                 confirmAlert.setContentText("ID: " + productId.trim() + "\n\nEsta acción no se puede deshacer.");
+                confirmAlert.getDialogPane().setMinWidth(700);
+                confirmAlert.getDialogPane().setMinHeight(300);
+                confirmAlert.getDialogPane().setStyle("-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #000000;");
 
                 confirmAlert.showAndWait().ifPresent(response -> {
                     if (response == ButtonType.OK) {
@@ -1337,6 +1386,9 @@
                     confirmAlert.setContentText("Categoría: " + selectedCategory.getName() + 
                                             " (ID: " + selectedCategory.getId() + ")" +
                                             "\n\nLos productos de esta categoría quedarán sin categoría.\nEsta acción no se puede deshacer.");
+                    confirmAlert.getDialogPane().setMinWidth(700);
+                    confirmAlert.getDialogPane().setMinHeight(300);
+                    confirmAlert.getDialogPane().setStyle("-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #000000;");
 
                     confirmAlert.showAndWait().ifPresent(response -> {
                         if (response == ButtonType.OK) {
@@ -1365,6 +1417,9 @@
             alert.setTitle(title);
             alert.setHeaderText(null);
             alert.setContentText(message);
+            alert.getDialogPane().setMinWidth(700);
+            alert.getDialogPane().setMinHeight(300);
+            alert.getDialogPane().setStyle("-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #000000;");
             alert.showAndWait();
         }
         
@@ -1373,6 +1428,9 @@
             alert.setTitle(title);
             alert.setHeaderText(null);
             alert.setContentText(message);
+            alert.getDialogPane().setMinWidth(700);
+            alert.getDialogPane().setMinHeight(300);
+            alert.getDialogPane().setStyle("-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #000000;");
             alert.showAndWait();
         }
         
@@ -1391,12 +1449,17 @@
             content.setPadding(new Insets(20));
             
             Label label = new Label(message);
+            label.setStyle("-fx-font-size: 20px; -fx-font-weight: bold;");
             TextField idField = new TextField();
             idField.setPromptText("Ingresa el ID del producto...");
+            idField.setStyle("-fx-font-size: 20px; -fx-font-weight: bold; -fx-pref-height: 50px;");
             
             content.getChildren().addAll(label, idField);
             
             dialog.getDialogPane().setContent(content);
+            dialog.getDialogPane().setMinWidth(750);
+            dialog.getDialogPane().setMinHeight(320);
+            dialog.getDialogPane().setStyle("-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #000000;");
             
             // Add OK button
             ButtonType okButtonType = new ButtonType("OK", javafx.scene.control.ButtonBar.ButtonData.OK_DONE);
