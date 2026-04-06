@@ -10,23 +10,18 @@
     import javafx.scene.Scene;
     import javafx.scene.control.*;
     import javafx.scene.layout.*;
-    import javafx.scene.chart.*;
     import javafx.scene.image.Image;
     import javafx.scene.image.ImageView;
     import javafx.stage.Stage;
     import javafx.animation.FadeTransition;
     import javafx.animation.ScaleTransition;
-    import javafx.animation.ParallelTransition;
     import javafx.util.Duration;
     import model.Category;
     import model.Product;
     import model.Movement;
 
     import java.sql.SQLException;
-    import java.time.LocalDateTime;
     import java.util.List;
-    import java.util.Map;
-    import java.util.HashMap;
     import java.io.InputStream;
 
     /**
@@ -39,8 +34,12 @@
         private TextArea outputArea;
         private BorderPane mainLayout;
         private VBox dashboardView;
-        private PieChart inventoryChart;
-        private BarChart<String, Number> categoryChart;
+        
+        // Metric cards labels
+        private Label totalProductsValue;
+        private Label totalStockValue;
+        private Label totalValueValue;
+        private Label totalCategoriesValue;
 
         @Override
         public void start(Stage primaryStage) {
@@ -195,142 +194,114 @@
         }
         
         /**
-         * Creates statistics section with charts
+         * Creates statistics section with metric cards
          */
         private VBox createStatisticsSection() {
             VBox section = new VBox(16);
             
             Label sectionTitle = new Label("Resumen del Inventario");
             sectionTitle.getStyleClass().add("title-section");
+            sectionTitle.setStyle("-fx-font-size: 20px; -fx-font-weight: 600; -fx-text-fill: #212121; " +
+                                "-fx-alignment: center; -fx-padding: 0px 0 8px 0;");
+            sectionTitle.setMaxWidth(Double.MAX_VALUE);
+            sectionTitle.setAlignment(Pos.CENTER);
             
-            HBox chartsContainer = new HBox(16);
-            chartsContainer.setAlignment(Pos.CENTER);
+            // Create metrics container with 4 cards in a row
+            HBox metricsContainer = new HBox(16);
+            metricsContainer.setAlignment(Pos.CENTER);
+            metricsContainer.setPadding(new Insets(0));
             
-            // Inventory distribution pie chart
-            inventoryChart = createInventoryPieChart();
-            VBox pieChartCard = wrapInCard(inventoryChart, "Distribución por Categoría");
+            // Create 4 metric cards
+            VBox totalProductsCard = createMetricCard("TOTAL PRODUCTOS", "0", "#212121");
+            totalProductsValue = (Label) totalProductsCard.getChildren().get(1);
             
-            // Category bar chart
-            categoryChart = createCategoryBarChart();
-            VBox barChartCard = wrapInCard(categoryChart, "Stock por Categoría");
+            VBox totalStockCard = createMetricCard("STOCK TOTAL", "0", "#2D5016");
+            totalStockValue = (Label) totalStockCard.getChildren().get(1);
             
-            chartsContainer.getChildren().addAll(pieChartCard, barChartCard);
-            HBox.setHgrow(pieChartCard, Priority.ALWAYS);
-            HBox.setHgrow(barChartCard, Priority.ALWAYS);
+            VBox totalValueCard = createMetricCard("VALOR TOTAL", "$0.00", "#1976D2");
+            totalValueValue = (Label) totalValueCard.getChildren().get(1);
             
-            section.getChildren().addAll(sectionTitle, chartsContainer);
+            VBox totalCategoriesCard = createMetricCard("CATEGORÍAS", "0", "#F57C00");
+            totalCategoriesValue = (Label) totalCategoriesCard.getChildren().get(1);
             
-            // Update charts with actual data after creation
+            metricsContainer.getChildren().addAll(
+                totalProductsCard, totalStockCard, totalValueCard, totalCategoriesCard
+            );
+            
+            // Set equal growth for all cards
+            HBox.setHgrow(totalProductsCard, Priority.ALWAYS);
+            HBox.setHgrow(totalStockCard, Priority.ALWAYS);
+            HBox.setHgrow(totalValueCard, Priority.ALWAYS);
+            HBox.setHgrow(totalCategoriesCard, Priority.ALWAYS);
+            
+            section.getChildren().addAll(sectionTitle, metricsContainer);
+            
+            // Update metrics with actual data
             updateAllCharts();
             
             return section;
         }
         
         /**
-         * Creates a pie chart showing inventory distribution
+         * Creates a single metric card with title, value, and color
          */
-        private PieChart createInventoryPieChart() {
-            PieChart chart = new PieChart();
-            chart.setTitle("");
-            chart.setLegendVisible(true);
-            chart.setPrefSize(400, 300);
-            chart.getStyleClass().add("chart");
+        private VBox createMetricCard(String title, String value, String color) {
+            VBox card = new VBox(12);
+            card.setAlignment(Pos.CENTER);
+            card.setPadding(new Insets(20));
+            card.setStyle("-fx-background-color: white; -fx-background-radius: 8px; " +
+                        "-fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.12), 10, 0, 0, 2);");
+            card.setMinHeight(140);
+            card.setPrefHeight(160);
+            card.setMaxWidth(Double.MAX_VALUE);
             
-            // Add initial empty data
-            PieChart.Data emptyData = new PieChart.Data("Sin datos", 1);
-            chart.getData().add(emptyData);
+            // Title label
+            Label titleLabel = new Label(title);
+            titleLabel.setStyle("-fx-font-size: 12px; -fx-font-weight: 600; -fx-text-fill: #757575; " +
+                              "-fx-text-alignment: center;");
+            titleLabel.setMaxWidth(Double.MAX_VALUE);
+            titleLabel.setAlignment(Pos.CENTER);
             
-            return chart;
+            // Value label
+            Label valueLabel = new Label(value);
+            valueLabel.setStyle("-fx-font-size: 32px; -fx-font-weight: 700; -fx-text-fill: " + color + ";");
+            valueLabel.setMaxWidth(Double.MAX_VALUE);
+            valueLabel.setAlignment(Pos.CENTER);
+            valueLabel.setWrapText(true);
+            VBox.setVgrow(valueLabel, Priority.ALWAYS);
+            
+            card.getChildren().addAll(titleLabel, valueLabel);
+            
+            return card;
         }
+
         
         /**
-         * Creates a bar chart showing stock by category
+         * Updates the summary dashboard with current metrics
          */
-        private BarChart<String, Number> createCategoryBarChart() {
-            CategoryAxis xAxis = new CategoryAxis();
-            xAxis.setLabel("Categoría");
-            
-            NumberAxis yAxis = new NumberAxis();
-            yAxis.setLabel("Cantidad en Stock");
-            
-            BarChart<String, Number> chart = new BarChart<>(xAxis, yAxis);
-            chart.setTitle("");
-            chart.setLegendVisible(false);
-            chart.setPrefSize(400, 300);
-            chart.getStyleClass().add("chart");
-            
-            // Add initial empty data
-            XYChart.Series<String, Number> series = new XYChart.Series<>();
-            series.setName("Stock");
-            series.getData().add(new XYChart.Data<>("Sin datos", 0));
-            chart.getData().add(series);
-            
-            return chart;
-        }
-        
-        /**
-         * Updates the inventory pie chart with current data
-         */
-        private void updateInventoryChart() {
+        private void updateSummaryDashboard() {
             try {
                 List<Product> products = controller.getAllProducts();
+                List<Category> categories = controller.getAllCategories();
                 
-                Map<String, Integer> categoryCount = new HashMap<>();
+                // Calculate metrics
+                int totalProducts = products.size();
+                int totalStock = products.stream()
+                    .mapToInt(Product::getStockQuantity)
+                    .sum();
+                double totalValue = products.stream()
+                    .mapToDouble(p -> p.getStockQuantity() * p.getSalePrice())
+                    .sum();
+                int totalCategories = categories.size();
                 
-                for (Product product : products) {
-                    String categoryName = product.getCategory() != null ? 
-                        product.getCategory().getName() : "Sin categoría";
-                    categoryCount.put(categoryName, 
-                        categoryCount.getOrDefault(categoryName, 0) + 1);
-                }
-                
-                inventoryChart.getData().clear();
-                for (Map.Entry<String, Integer> entry : categoryCount.entrySet()) {
-                    PieChart.Data data = new PieChart.Data(
-                        entry.getKey() + " (" + entry.getValue() + ")", 
-                        entry.getValue()
-                    );
-                    inventoryChart.getData().add(data);
-                }
-                
-                if (inventoryChart.getData().isEmpty()) {
-                    PieChart.Data emptyData = new PieChart.Data("Sin datos", 1);
-                    inventoryChart.getData().add(emptyData);
-                }
+                // Update labels
+                totalProductsValue.setText(String.valueOf(totalProducts));
+                totalStockValue.setText(String.valueOf(totalStock));
+                totalValueValue.setText(String.format("$%.2f", totalValue));
+                totalCategoriesValue.setText(String.valueOf(totalCategories));
                 
             } catch (SQLException e) {
-                System.out.println("Error updating chart: " + e.getMessage());
-            }
-        }
-        
-        /**
-         * Updates the category bar chart with current data
-         */
-        private void updateCategoryChart() {
-            try {
-                List<Product> products = controller.getAllProducts();
-                
-                Map<String, Integer> categoryStock = new HashMap<>();
-                
-                for (Product product : products) {
-                    String categoryName = product.getCategory() != null ? 
-                        product.getCategory().getName() : "Sin categoría";
-                    categoryStock.put(categoryName, 
-                        categoryStock.getOrDefault(categoryName, 0) + product.getStockQuantity());
-                }
-                
-                categoryChart.getData().clear();
-                XYChart.Series<String, Number> series = new XYChart.Series<>();
-                series.setName("Stock");
-                
-                for (Map.Entry<String, Integer> entry : categoryStock.entrySet()) {
-                    series.getData().add(new XYChart.Data<>(entry.getKey(), entry.getValue()));
-                }
-                
-                categoryChart.getData().add(series);
-                
-            } catch (SQLException e) {
-                System.out.println("Error updating chart: " + e.getMessage());
+                System.out.println("Error updating summary dashboard: " + e.getMessage());
             }
         }
         
@@ -665,11 +636,10 @@
         }
         
         /**
-         * Updates all charts with current data
+         * Updates all dashboard components with current data
          */
         private void updateAllCharts() {
-            updateInventoryChart();
-            updateCategoryChart();
+            updateSummaryDashboard();
         }
         
         // ========== Action Handlers ==========
